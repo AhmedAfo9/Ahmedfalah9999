@@ -14,101 +14,81 @@
             --background-color: #eef2f7;
         }
         *, *::before, *::after { box-sizing: border-box; }
-        html { height: 100%; }
 
         /* ================================================= */
-        /* === 1. الكود الأساسي لتثبيت الهيكل === */
+        /* === 1. الكود المطور لتثبيت الهيكل === */
         /* ================================================= */
+        html {
+            height: 100%;
+            overflow: hidden; /* تعديل مهم: منع حركة الصفحة الأساسية */
+        }
         body {
-            /* هذا يجعل الجسم حاوية مرنة تملأ الشاشة بالطول */
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            overflow: hidden; /* منع حركة كامل الصفحة */
+            height: 100%; /* تعديل مهم: استخدام 100% بدلاً من 100vh لثبات أكبر */
+            overflow: hidden; 
             margin: 0;
             font-family: 'Cairo', 'Tahoma', sans-serif;
             background-color: var(--background-color);
         }
-
         .fixed-header, .fixed-footer {
-            /* هذا يمنع الرأس والتذييل من التقلص */
             flex-shrink: 0;
             background-color: var(--white-bg);
             z-index: 10;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-
         #scroll-wrapper {
-            /* هذا يجعل الحاوية الوسطى تنمو لتملأ الفراغ وتسمح بالتمرير الداخلي فقط */
             flex-grow: 1;
-            overflow-y: auto;
+            overflow-y: auto; /* هذا يسمح بالتمرير الداخلي فقط */
             padding: 20px 10px;
         }
         /* ================================================= */
 
         .persian-text { font-family: 'Vazirmatn', sans-serif; }
-        
         .fixed-header h1 { font-size: 24px; color: var(--primary-color); text-align: center; margin: 10px 0; }
         .fixed-footer p { text-align: center; margin: 15px 0; color: #6c757d; font-size: 14px; }
-        
         #main-container {
-            background: var(--white-bg);
-            padding: 25px 30px;
-            border-radius: 18px;
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
+            background: var(--white-bg); padding: 25px 30px; border-radius: 18px; width: 100%;
+            max-width: 900px; margin: 0 auto; position: relative; z-index: 1; overflow: hidden;
             border: 3px solid transparent;
         }
-
         #main-container::before {
             content: ''; position: absolute; top: -3px; left: -3px; width: calc(100% + 6px); height: calc(100% + 6px);
             background: linear-gradient(60deg, #0d6efd, #0dcaf0, #198754, #ffc107);
             background-size: 400% 400%; border-radius: 20px; z-index: -1;
             animation: gradient-animation 5s ease infinite;
         }
-
         @keyframes gradient-animation {
             0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; }
         }
-
         h2 { font-size: 20px; margin-top: 30px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid var(--primary-color); }
         .input-section { margin-bottom: 25px; }
         #verb-select, #verb-input { width: 100%; padding: 14px; font-size: 18px; border-radius: 8px; border: 1px solid var(--border-color); }
         #verb-input { direction: ltr; }
         #conjugate-btn { width: 100%; padding: 15px; margin-top: 15px; font-size: 18px; font-weight: bold; color: #fff; background: linear-gradient(45deg, var(--success-color), #20c997); border: none; border-radius: 8px; cursor: pointer; }
-        
         #results-container { margin-top: 30px; }
         #verb-info, #correction-notice { text-align: center; margin-bottom: 15px; padding: 14px; border-radius: 8px; display: none; }
         #verb-info { background-color: #e0eaff; }
         #correction-notice { background-color: #d1ecf1; }
-        
         .table-responsive { width: 100%; overflow-x: auto; }
         #conjugation-table { width: 100%; border-collapse: collapse; display: none; }
         #conjugation-table th, #conjugation-table td { border: 1px solid var(--border-color); padding: 12px; text-align: center; font-size: 16px; }
         #conjugation-table th { background-color: var(--primary-color); color: white; }
-        
         #examples-section { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); display: none; }
         #example-options { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
         #example-options button { background: var(--warning-color); color: var(--dark-text); border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        
         #sentences-container { margin-top: 20px; padding: 20px; background-color: var(--light-bg); border-radius: 8px; display: none; }
         #sentences-container ul { list-style-type: none; padding: 0; margin: 0; }
         #sentences-container li { font-size: 17px; padding: 10px; border-bottom: 1px solid #e9ecef; }
         .arabic-translation { color: #6c757d; font-size: 14px; margin-right: 10px;}
-        
         @media (max-width: 768px) {
             #scroll-wrapper { padding: 10px 5px; } .fixed-header h1 { font-size: 20px; } #main-container { padding: 15px; }
         }
     </style>
 </head>
-
 <body>
     <header class="fixed-header">
-        <h1>مصّرف الفعل الفارسي</h1>
+        <h1>المُصرّف الذكي للأفعال الفارسية</h1>
     </header>
 
     <div id="scroll-wrapper">
@@ -141,7 +121,6 @@
     </footer>
 
     <script>
-        // هذا الكود هو نفسه من المرة السابقة وهو صحيح
         const pronouns = [ { fa: "من", ar: "أنا" }, { fa: "تو", ar: "أنت" }, { fa: "او", ar: "هو/هي" }, { fa: "ما", ar: "نحن" }, { fa: "شما", ar: "أنتم" }, { fa: "آنها", ar: "هم" } ];
         const verbStems = { "آفریدن": "آفرین", "آمدن": "آ", "آوردن": "آور", "ایستادن": "ایست", "باز کردن": "باز کن", "بازی کردن": "بازی کن","باور کردن": "باور کن", "بخشیدن": "بخش", "بردن": "بر", "بستن": "بند", "بلند کردن": "بلند کن", "به یاد آوردن": "به یاد آور","بودن": "باش", "پذیرفتن": "پذیر", "پریدن": "پر", "پرسیدن": "پرس", "پیدا کردن": "پیدا کن", "پوشیدن": "پوش","ترسیدن": "ترس", "تنظیم کردن": "تنظیم کن", "توانستن": "توان", "توضیح دادن": "توضیح ده", "جنگیدن": "جنگ","حرکت کردن": "حرکت کن", "خواستن": "خواه", "خواندن": "خوان", "خریدن": "خر", "خندیدن": "خند", "خوابیدن": "خواب","خوردن": "خور", "دادن": "ده", "داشتن": "دار", "دانستن": "دان", "دنبال کردن": "دنبال کن", "دویدن": "دو","دیدن": "بین", "راه رفتن": "راه رو", "رفتن": "رو", "زنگ زدن": "زنگ زن", "زندگی کردن": "زندگی کن", "ساختن": "ساز","ستدن": "ستان", "سخن گفتن": "سخن گو", "سعی کردن": "سعی کن", "سفر کردن": "سفر کن", "شناختن": "شناس","شنیدن": "شنو", "شدن": "شو", "شروع کردن": "شروع کن", "شکستن": "شکن", "صحبت کردن": "صحبت کن", "فروختن": "فروش","فکر کردن": "فکر کن", "فهمیدن": "فهم", "کار کردن": "کار کن", "کشتن": "کش", "کمک کردن": "کمک کن","کنار زدن": "کنار زن", "گذاشتن": "گذار", "گرفتن": "گیر", "گفتن": "گو", "گم شدن": "گم شو", "گم کردن": "گم کن","گوش دادن": "گوش ده", "مردن": "میر", "نشستن": "نشین", "نگاه کردن": "نگاه کن", "نوشتن": "نویس","یاد دادن": "یاد ده", "یاد گرفتن": "یاد گیر", "انتخاب کردن": "انتخاب کن", "احساس کردن": "احساس کن", "استفاده کردن": "استفاده کن"};
         const sentenceTemplates = { "آفریدن": { phrase: "جهان را", ar: "العالم" }, "آمدن": { phrase: "به خانه", ar: "إلى البيت" },"آوردن": { phrase: "یک هدیه را", ar: "هدية" }, "ایستادن": { phrase: "در صف", ar: "في الطابور" },"باز کردن": { phrase: "در را", ar: "الباب" }, "بازی کردن": { phrase: "فوتبال", ar: "كرة القدم" },"باور کردن": { phrase: "حرف او را", ar: "كلامه" }, "بخشیدن": { phrase: "خطای او را", ar: "خطأه" },"بردن": { phrase: "کتاب را", ar: "الكتاب" }, "بستن": { phrase: "پنجره را", ar: "النافذة" },"بلند کردن": { phrase: "جعبه را", ar: "الصندوق" }, "به یاد آوردن": { phrase: "خاطرات کودکی را", ar: "ذكريات الطفولة" },"بودن": { phrase: "در کلاس", ar: "في الصف" }, "پذیرفتن": { phrase: "دعوت را", ar: "الدعوة" },"پریدن": { phrase: "از روی مانع", ar: "من فوق الحاجز" }, "پرسیدن": { phrase: "یک سوال را", ar: "سؤالاً" },"پیدا کردن": { phrase: "کلیدهایم را", ar: "مفاتيحي" }, "پوشیدن": { phrase: "لباس جدید را", ar: "الثوب الجديد" },"ترسیدن": { phrase: "از تاریکی", ar: "من الظلام" }, "تنظیم کردن": { phrase: "ساعت را", ar: "الساعة" },"توانستن": { phrase: "این کار را انجام دهد", ar: "أن يفعل هذا الأمر" }, "توضیح دادن": { phrase: "درس را", ar: "الدرس" },"جنگیدن": { phrase: "برای آزادی", ar: "من أجل الحرية" }, "حرکت کردن": { phrase: "به سمت جلو", ar: "نحو الأمام" },"خواستن": { phrase: "یک لیوان آب", ar: "كوب ماء" }, "خواندن": { phrase: "یک کتاب", ar: "كتاباً" },"خریدن": { phrase: "میوه", ar: "فاكهة" }, "خندیدن": { phrase: "با صدای بلند", ar: "بصوت عالٍ" },"خوابیدن": { phrase: "زود", ar: "مبكراً" }, "خوردن": { phrase: "شام را", ar: "العشاء" },"دادن": { phrase: "گل به مادر", ar: "وردة للأم" }, "داشتن": { phrase: "یک ماشین خوب", ar: "سيارة جيدة" },"دانستن": { phrase: "جواب را", ar: "الإجابة" }, "دنبال کردن": { phrase: "اهداف خود را", ar: "أهدافه" },"دویدن": { phrase: "در پارک", ar: "في الحديقة" }, "دیدن": { phrase: "یک دوست قدیمی را", ar: "صديقاً قديماً" },"راه رفتن": { phrase: "در خیابان", ar: "في الشارع" }, "رفتن": { phrase: "به سفر", ar: "إلى السفر" },"زنگ زدن": { phrase: "به پلیس", ar: "للدفاع المدني" },"زندگی کردن": { phrase: "در آرامش", ar: "في سلام" },"ساختن": { phrase: "یک مدل هواپیما", ar: "نموذج طائرة" }, "ستدن": { phrase: "داد خود را", ar: "حقه" },"سخن گفتن": { phrase: "درباره تاریخ", ar: "عن التاريخ" }, "سعی کردن": { phrase: "برای موفقیت", ar: "للنجاح" },"سفر کردن": { phrase: "به شمال", ar: "إلى الشمال" }, "شناختن": { phrase: "یک دوست خوب را", ar: "صديقاً جيداً" },"شنیدن": { phrase: "یک خبر خوب", ar: "خبراً جيداً" }, "شدن": { phrase: "پزشک", ar: "طبيباً" },"شروع کردن": { phrase: "پروژه را", ar: "المشروع" }, "شکستن": { phrase: "یک رکورد را", ar: "رقماً قياسياً" },"صحبت کردن": { phrase: "با مدیر", ar: "مع المدير" }, "فروختن": { phrase: "خانه خود را", ar: "بيته" },"فکر کردن": { phrase: "به یک راه حل", ar: "بشأن حل" }, "فهمیدن": { phrase: "موضوع را", ar: "الموضوع" },"کار کردن": { phrase: "با کامپیوتر", ar: "بالحاسوب" }, "کشتن": { phrase: "وقت را", ar: "الوقت" },"کمک کردن": { phrase: "به یک سالمند", ar: "لمسن" }, "کنار زدن": { phrase: "پرده را", ar: "الستار" },"گذاشتن": { phrase: "کلید را روی میز", ar: "المفتاح على الطاولة" }, "گرفتن": { phrase: "یک تاکسی", ar: "سيارة أجرة" },"گفتن": { phrase: "حقیقت را", ar: "الحقيقة" }, "گم شدن": { phrase: "در شهر", ar: "في المدينة" },"گم کردن": { phrase: "کیف پول را", ar: "المحفظة" }, "گوش دادن": { phrase: "به موسیقی", ar: "للموسيقى" },"مردن": { phrase: "از خنده", ar: "من الضحك" }, "نشستن": { phrase: "روی مبل", ar: "على الأريكة" },"نگاه کردن": { phrase: "به عکس‌ها", ar: "إلى الصور" }, "نوشتن": { phrase: "یک شعر", ar: "قصيدة" },"یاد دادن": { phrase: "شنا به کودکان", ar: "السباحة للأطفال" }, "یاد گرفتن": { phrase: "یک مهارت جدید", ar: "مهارة جديدة" },"انتخاب کردن": { phrase: "بهترین گزینه را", ar: "الخيار الأفضل" }, "احساس کردن": { phrase: "خستگی", ar: "التعب" },"استفاده کردن": { phrase: "از فرصت", ar: "من الفرصة" },"default_transitive": { phrase: "چیزی را", ar: "شيئًا ما" },"default_intransitive": { phrase: "", ar: "" }};
