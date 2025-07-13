@@ -47,9 +47,7 @@
         #verb-input { direction: ltr; }
         #conjugate-btn { width: 100%; padding: 15px; margin-top: 15px; font-size: 18px; font-weight: bold; color: #fff; background: linear-gradient(45deg, var(--success-color), #20c997); border: none; border-radius: 8px; cursor: pointer; }
         #results-container { margin-top: 30px; }
-        #verb-info, #correction-notice { text-align: center; margin-bottom: 15px; padding: 14px; border-radius: 8px; display: none; }
-        #verb-info { background-color: #e0eaff; }
-        #correction-notice { background-color: #d1ecf1; }
+        #verb-info { text-align: center; margin-bottom: 15px; padding: 14px; border-radius: 8px; display: none; background-color: #e0eaff; }
         .table-responsive { width: 100%; overflow-x: auto; }
         #conjugation-table { width: 100%; border-collapse: collapse; display: none; }
         #conjugation-table th, #conjugation-table td { border: 1px solid var(--border-color); padding: 12px; text-align: center; font-size: 16px; }
@@ -61,9 +59,7 @@
         #sentences-container ul { list-style-type: none; padding: 0; margin: 0; }
         #sentences-container li { font-size: 17px; padding: 10px; border-bottom: 1px solid #e9ecef; }
         .arabic-translation { color: #6c757d; font-size: 14px; margin-right: 10px;}
-        @media (max-width: 768px) {
-            #scroll-wrapper { padding: 10px 5px; } .fixed-header h1 { font-size: 20px; } #main-container { padding: 15px; }
-        }
+        @media (max-width: 768px) { #scroll-wrapper { padding: 10px 5px; } .fixed-header h1 { font-size: 20px; } #main-container { padding: 15px; } }
     </style>
 </head>
 <body>
@@ -80,7 +76,7 @@
                 </div>
             </div>
             <div id="results-container">
-                <div id="correction-notice"></div><div id="verb-info" class="persian-text"></div>
+                <div id="verb-info" class="persian-text"></div>
                 <div class="table-responsive"><table id="conjugation-table"><thead><tr><th class="pronoun-col">الضمير</th><th class="persian-text">ماضی ساده</th><th class="persian-text">حال اخباری</th><th class="persian-text">امر</th></tr></thead><tbody id="table-body" class="persian-text"></tbody></table></div>
                 <div id="examples-section">
                     <div id="example-options">
@@ -92,77 +88,76 @@
             </div>
         </div>
     </div>
-    
-    <footer class="fixed-footer">
-        <p>جميع الحقوق محفوظة. تم بواسطة احمد فلاح</p>
-    </footer>
+    <footer class="fixed-footer"><p>جميع الحقوق محفوظة. تم بواسطة احمد فلاح</p></footer>
 
     <script>
+        // --- DATA ---
         const pronouns = [ { fa: "من", ar: "أنا" }, { fa: "تو", ar: "أنت" }, { fa: "او", ar: "هو/هي" }, { fa: "ما", ar: "نحن" }, { fa: "شما", ar: "أنتم" }, { fa: "آنها", ar: "هم" } ];
+        const verbStems = {"آفریدن":"آفرین","آمدن":"آ","آوردن":"آور","ایستادن":"ایست","باز کردن":"باز کن","بازی کردن":"بازی کن","باور کردن":"باور کن","بخشیدن":"بخش","بردن":"بر","بستن":"بند","بلند کردن":"بلند کن","به یاد آوردن":"به یاد آور","بودن":"باش","پذیرفتن":"پذیر","پریدن":"پر","پرسیدن":"پرس","پیدا کردن":"پیدا کن","پوشیدن":"پوش","ترسیدن":"ترس","تنظیم کردن":"تنظیم کن","توانستن":"توان","توضیح دادن":"توضیح ده","جنگیدن":"جنگ","حرکت کردن":"حرکت کن","خواستن":"خواه","خواندن":"خوان","خریدن":"خر","خندیدن":"خند","خوابیدن":"خواب","خوردن":"خور","دادن":"ده","داشتن":"دار","دانستن":"دان","دنبال کردن":"دنبال کن","دویدن":"دو","دیدن":"بین","راه رفتن":"راه رو","رفتن":"رو","زنگ زدن":"زنگ زن","زندگی کردن":"زندگی کن","ساختن":"ساز","ستدن":"ستان","سخن گفتن":"سخن گو","سعی کردن":"سعی کن","سفر کردن":"سفر کن","شناختن":"شناس","شنیدن":"شنو","شدن":"شو","شروع کردن":"شروع کن","شکستن":"شکن","صحبت کردن":"صحبت کن","فروختن":"فروش","فکر کردن":"فکر کن","فهمیدن":"فهم","کار کردن":"کار کن","کشتن":"کش","کمک کردن":"کمک کن","کنار زدن":"کنار زن","گذاشتن":"گذار","گرفتن":"گیر","گفتن":"گو","گم شدن":"گم شو","گم کردن":"گم کن","گوش دادن":"گوش ده","مردن":"میر","نشستن":"نشین","نگاه کردن":"نگاه کن","نوشتن":"نویس","یاد دادن":"یاد ده","یاد گرفتن":"یاد گیر","انتخاب کردن":"انتخاب کن","احساس کردن":"احساس کن","استفاده کردن":"استفاده کن"};
+        const verbMeanings = {"آفریدن":"الخلق","آمدن":"المجيء","آوردن":"الإحضار","ایستادن":"الوقوف","باز کردن":"الفتح","بازی کردن":"اللعب","باور کردن":"التصديق","بخشیدن":"المسامحة","بردن":"الأخذ","بستن":"الإغلاق","بلند کردن":"الرفع","به یاد آوردن":"التذكر","بودن":"الكينونة","پذیرفتن":"القبول","پریدن":"القفز","پرسیدن":"السؤال","پیدا کردن":"الإيجاد","پوشیدن":"اللبس","ترسیدن":"الخوف","تنظیم کردن":"التنظيم","توانستن":"الاستطاعة","توضیح دادن":"الشرح","جنگیدن":"القتال","حرکت کردن":"التحرك","خواستن":"الإرادة/الطلب","خواندن":"القراءة","خریدن":"الشراء","خندیدن":"الضحك","خوابیدن":"النوم","خوردن":"الأكل","دادن":"الإعطاء","داشتن":"الملكية","دانستن":"المعرفة","دنبال کردن":"المتابعة","دویدن":"الركض","دیدن":"الرؤية","راه رفتن":"المشي","رفتن":"الذهاب","زنگ زدن":"الاتصال","زندگی کردن":"العيش","ساختن":"الصنع","ستدن":"الأخذ (قديم)","سخن گفتن":"التحدث","سعی کردن":"المحاولة","سفر کردن":"السفر","شناختن":"التعرف","شنیدن":"السماع","شدن":"الصيورة","شروع کردن":"البدء","شکستن":"الكسر","صحبت کردن":"التكلم","فروختن":"البيع","فکر کردن":"التفكير","فهمیدن":"الفهم","کار کردن":"العمل","کشتن":"القتل","کمک کردن":"المساعدة","کنار زدن":"الإزاحة","گذاشتن":"الوضع","گرفتن":"الأخذ","گفتن":"القول","گم شدن":"الضياع","گم کردن":"الإضاعة","گوش دادن":"الاستماع","مردن":"الموت","نشستن":"الجلوس","نگاه کردن":"النظر","نوشتن":"الكتابة","یاد دادن":"التعليم","یاد گرفتن":"التعلم","انتخاب کردن":"الاختيار","احساس کردن":"الإحساس","استفاده کردن":"الاستخدام"};
         
-        // --- قاموس الجذور ---
-        const verbStems = { "آفریدن": "آفرین", "آمدن": "آ", "آوردن": "آور", "ایستادن": "ایست", "باز کردن": "باز کن", "بازی کردن": "بازی کن","باور کردن": "باور کن", "بخشیدن": "بخش", "بردن": "بر", "بستن": "بند", "بلند کردن": "بلند کن", "به یاد آوردن": "به یاد آور","بودن": "باش", "پذیرفتن": "پذیر", "پریدن": "پر", "پرسیدن": "پرس", "پیدا کردن": "پیدا کن", "پوشیدن": "پوش","ترسیدن": "ترس", "تنظیم کردن": "تنظیم کن", "توانستن": "توان", "توضیح دادن": "توضیح ده", "جنگیدن": "جنگ","حرکت کردن": "حرکت کن", "خواستن": "خواه", "خواندن": "خوان", "خریدن": "خر", "خندیدن": "خند", "خوابیدن": "خواب","خوردن": "خور", "دادن": "ده", "داشتن": "دار", "دانستن": "دان", "دنبال کردن": "دنبال کن", "دویدن": "دو","دیدن": "بین", "راه رفتن": "راه رو", "رفتن": "رو", "زنگ زدن": "زنگ زن", "زندگی کردن": "زندگی کن", "ساختن": "ساز","ستدن": "ستان", "سخن گفتن": "سخن گو", "سعی کردن": "سعی کن", "سفر کردن": "سفر کن", "شناختن": "شناس","شنیدن": "شنو", "شدن": "شو", "شروع کردن": "شروع کن", "شکستن": "شکن", "صحبت کردن": "صحبت کن", "فروختن": "فروش","فکر کردن": "فکر کن", "فهمیدن": "فهم", "کار کردن": "کار کن", "کشتن": "کش", "کمک کردن": "کمک کن","کنار زدن": "کنار زن", "گذاشتن": "گذار", "گرفتن": "گیر", "گفتن": "گو", "گم شدن": "گم شو", "گم کردن": "گم کن","گوش دادن": "گوش ده", "مردن": "میر", "نشستن": "نشین", "نگاه کردن": "نگاه کن", "نوشتن": "نویس","یاد دادن": "یاد ده", "یاد گرفتن": "یاد گیر", "انتخاب کردن": "انتخاب کن", "احساس کردن": "احساس کن", "استفاده کردن": "استفاده کن"};
-
-        // --- 2. قاموس جديد للمعاني العربية في القائمة المنسدلة ---
-        const verbMeanings = { "آفریدن": "الخلق", "آمدن": "المجيء", "آوردن": "الإحضار", "ایستادن": "الوقوف", "باز کردن": "الفتح", "بازی کردن": "اللعب", "باور کردن": "التصديق", "بخشیدن": "المسامحة", "بردن": "الأخذ", "بستن": "الإغلاق", "بلند کردن": "الرفع", "به یاد آوردن": "التذكر", "بودن": "الكينونة", "پذیرفتن": "القبول", "پریدن": "القفز", "پرسیدن": "السؤال", "پیدا کردن": "الإيجاد", "پوشیدن": "اللبس", "ترسیدن": "الخوف", "تنظیم کردن": "التنظيم", "توانستن": "الاستطاعة", "توضیح دادن": "الشرح", "جنگیدن": "القتال", "حرکت کردن": "التحرك", "خواستن": "الإرادة/الطلب", "خواندن": "القراءة", "خریدن": "الشراء", "خندیدن": "الضحك", "خوابیدن": "النوم", "خوردن": "الأكل", "دادن": "الإعطاء", "داشتن": "الملكية", "دانستن": "المعرفة", "دنبال کردن": "المتابعة", "دویدن": "الركض", "دیدن": "الرؤية", "راه رفتن": "المشي", "رفتن": "الذهاب", "زنگ زدن": "الاتصال", "زندگی کردن": "العيش", "ساختن": "الصنع", "ستدن": "الأخذ (قديم)", "سخن گفتن": "التحدث", "سعی کردن": "المحاولة", "سفر کردن": "السفر", "شناختن": "التعرف", "شنیدن": "السماع", "شدن": "الصيورة", "شروع کردن": "البدء", "شکستن": "الكسر", "صحبت کردن": "التكلم", "فروختن": "البيع", "فکر کردن": "التفكير", "فهمیدن": "الفهم", "کار کردن": "العمل", "کشتن": "القتل", "کمک کردن": "المساعدة", "کنار زدن": "الإزاحة", "گذاشتن": "الوضع", "گرفتن": "الأخذ", "گفتن": "القول", "گم شدن": "الضياع", "گم کردن": "الإضاعة", "گوش دادن": "الاستماع", "مردن": "الموت", "نشستن": "الجلوس", "نگاه کردن": "النظر", "نوشتن": "الكتابة", "یاد دادن": "التعليم", "یاد گرفتن": "التعلم", "انتخاب کردن": "الاختيار", "احساس کردن": "الإحساس", "استفاده کردن": "الاستخدام"};
-        
-        // --- 3. قاموس الأمثلة المطور مع الترجمة العربية الكاملة ---
+        // --- قاموس الجمل الشامل والمخصص ---
         const sentenceTemplates = {
-            "رفتن": { phrase: "به مدرسه", ar_phrase: "إلى المدرسة", ar_verb: { past: ["ذهبتُ", "ذهبتَ", "ذهب", "ذهبنا", "ذهبتم", "ذهبوا"], present: ["أذهبُ", "تذهبُ", "يذهبُ", "نذهبُ", "تذهبون", "يذهبون"]}},
-            "خواندن": { phrase: "کتاب را", ar_phrase: "الكتاب", ar_verb: { past: ["قرأتُ", "قرأتَ", "قرأ", "قرأنا", "قرأتم", "قرأوا"], present: ["أقرأُ", "تقرأُ", "يقرأُ", "نقرأُ", "تقرأون", "يقرأون"]}},
-            "نوشتن": { phrase: "یک نامه را", ar_phrase: "رسالة", ar_verb: { past: ["كتبتُ", "كتبتَ", "كتب", "كتبنا", "كتبتم", "كتبوا"], present: ["أكتبُ", "تكتبُ", "يكتبُ", "نكتبُ", "تكتبون", "يكتبون"]}},
-            "دیدن": { phrase: "یک فیلم را", ar_phrase: "فيلماً", ar_verb: { past: ["رأيتُ", "رأيتَ", "رأى", "رأينا", "رأيتم", "رأوا"], present: ["أرى", "ترى", "يرى", "نرى", "ترون", "يرون"]}},
-            "خوردن": { phrase: "شام را", ar_phrase: "العشاء", ar_verb: { past: ["أكلتُ", "أكلتَ", "أكل", "أكلنا", "أكلتم", "أكلوا"], present: ["آكلُ", "تأكلُ", "يأكلُ", "نأكلُ", "تأكلون", "يأكلون"]}},
-            "گفتن": { phrase: "حقیقت را", ar_phrase: "الحقيقة", ar_verb: { past: ["قلتُ", "قلتَ", "قال", " قلنا", "قلتم", "قالوا"], present: ["أقولُ", "تقولُ", "يقولُ", "نقولُ", "تقولون", "يقولون"]}},
-            "آمدن": { phrase: "به خانه", ar_phrase: "إلى البيت", ar_verb: { past: ["أتيتُ", "أتيتَ", "أتى", "أتينا", "أتيتم", "أتوا"], present: ["آتي", "تأتي", "يأتي", "نأتي", "تأتون", "يأتون"]}},
-            // قوالب افتراضية
-            "default_transitive": { phrase: "چیزی را", ar_phrase: "شيئًا ما", ar_verb: null },
-            "default_intransitive": { phrase: "", ar_phrase: "", ar_verb: null }
+            "رفتن": { phrase: "به مدرسه", ar_phrase: "إلى المدرسة", ar_verb: { past: ["ذهبتُ","ذهبتَ","ذهب","ذهبنا","ذهبتم","ذهبوا"], present: ["أذهبُ","تذهبُ","يذهبُ","نذهبُ","تذهبون","يذهبون"] } },
+            "آمدن": { phrase: "به خانه", ar_phrase: "إلى البيت", ar_verb: { past: ["أتيتُ","أتيتَ","أتى","أتينا","أتيتم","أتوا"], present: ["آتي","تأتي","يأتي","نأتي","تأتون","يأتون"] } },
+            "خوردن": { phrase: "شام را", ar_phrase: "العشاء", ar_verb: { past: ["أكلتُ","أكلتَ","أكل","أكلنا","أكلتم","أكلوا"], present: ["آكلُ","تأكلُ","يأكلُ","نأكلُ","تأكلون","يأكلون"] } },
+            "نوشتن": { phrase: "یک نامه را", ar_phrase: "رسالة", ar_verb: { past: ["كتبتُ","كتبتَ","كتب","كتبنا","كتبتم","كتبوا"], present: ["أكتبُ","تكتبُ","يكتبُ","نكتبُ","تكتبون","يكتبون"] } },
+            "خواندن": { phrase: "کتاب را", ar_phrase: "الكتاب", ar_verb: { past: ["قرأتُ","قرأتَ","قرأ","قرأنا","قرأتم","قرأوا"], present: ["أقرأُ","تقرأُ","يقرأُ","نقرأُ","تقرأون","يقرأون"] } },
+            "دیدن": { phrase: "یک فیلم را", ar_phrase: "فيلماً", ar_verb: { past: ["رأيتُ","رأيتَ","رأى","رأينا","رأيتم","رأوا"], present: ["أرى","ترى","يرى","نرى","ترون","يرون"] } },
+            "گفتن": { phrase: "حقیقت را", ar_phrase: "الحقيقة", ar_verb: { past: ["قلتُ","قلتَ","قال","قلنا","قلتم","قالوا"], present: ["أقولُ","تقولُ","يقولُ","نقولُ","تقولون","يقولون"] } },
+            "شنیدن": { phrase: "صدای او را", ar_phrase: "صوته", ar_verb: { past: ["سمعتُ","سمعتَ","سمع","سمعنا","سمعتم","سمعوا"], present: ["أسمعُ","تسمعُ","يسمعُ","نسمعُ","تسمعون","يسمعون"] } },
+            "بازی کردن": { phrase: "فوتبال", ar_phrase: "كرة القدم", ar_verb: { past: ["لعبتُ","لعبتَ","لعب","لعبنا","لعبتم","لعبوا"], present: ["ألعبُ","تلعبُ","يلعبُ","نلعبُ","تلعبون","يلعبون"] } },
+            "صحبت کردن": { phrase: "با دوستم", ar_phrase: "مع صديقي", ar_verb: { past: ["تكلمتُ","تكلمتَ","تكلم","تكلمنا","تكلمتم","تكلموا"], present: ["أتكلمُ","تتكلمُ","يتكلمُ","نتكلمُ","تتكلمون","يتكلمون"] } },
+            "بودن": { phrase: "در کلاس", ar_phrase: "في الصف", ar_verb: { past: ["كنتُ","كنتَ","كان","كنا","كنتم","كانوا"], present: ["أكونُ","تكونُ","يكونُ","نكونُ","تكونون","يكونون"] } },
+            "خواستن": { phrase: "یک لیوان آب", ar_phrase: "كوب ماء", ar_verb: { past: ["أردتُ","أردتَ","أراد","أردنا","أردتم","أرادوا"], present: ["أريدُ","تريدُ","يريدُ","نريدُ","تريدون","يريدون"] } },
+            "دادن": { phrase: "هدیه را", ar_phrase: "الهدية", ar_verb: { past: ["أعطيتُ", "أعطيتَ", "أعطى", "أعطينا", "أعطيتم", "أعطوا"], present: ["أعطي", "تعطي", "يعطي", "نعطي", "تعطون", "يعطون"] } },
+            "داشتن": { phrase: "یک ماشین", ar_phrase: "سيارة", ar_verb: { past: ["كان لديّ", "كان لديكَ", "كان لديه", "كان لدينا", "كان لديكم", "كان لديهم"], present: ["لديّ", "لديكَ", "لديه", "لدينا", "لديكم", "لديهم"] } },
+            "خوابیدن": { phrase: "روی تخت", ar_phrase: "على السرير", ar_verb: { past: ["نمتُ", "نمتَ", "نام", "نمنا", "نمتم", "ناموا"], present: ["أنامُ", "تنامُ", "ينامُ", "ننامُ", "تنامون", "ينامون"] } },
+            "کار کردن": { phrase: "در شرکت", ar_phrase: "في الشركة", ar_verb: { past: ["عملتُ", "عملتَ", "عمل", "عملنا", "عملتم", "عملوا"], present: ["أعملُ", "تعملُ", "يعملُ", "نعملُ", "تعملون", "يعملون"] } },
+            "خندیدن": { phrase: "به یک جوک", ar_phrase: "على نكتة", ar_verb: { past: ["ضحكتُ", "ضحكتَ", "ضحك", "ضحكنا", "ضحكتم", "ضحكوا"], present: ["أضحكُ", "تضحكُ", "يضحكُ", "نضحكُ", "تضحكون", "يضحكون"] } },
+            "فکر کردن": { phrase: "درباره موضوع", ar_phrase: "حول الموضوع", ar_verb: { past: ["فكرتُ", "فكرتَ", "فكر", "فكرنا", "فكرتم", "فكروا"], present: ["أفكرُ", "تفكرُ", "يفكرُ", "نفكرُ", "تفكرون", "يفكرون"] } },
+            "فهمیدن": { phrase: "درس را", ar_phrase: "الدرس", ar_verb: { past: ["فهمتُ", "فهمتَ", "فهم", "فهمنا", "فهمتم", "فهموا"], present: ["أفهمُ", "تفهمُ", "يفهمُ", "نفهمُ", "تفهمون", "يفهمون"] } },
+            "گرفتن": { phrase: "توپ را", ar_phrase: "الكرة", ar_verb: { past: ["أخذتُ", "أخذتَ", "أخذ", "أخذنا", "أخذتم", "أخذوا"], present: ["آخذُ", "تأخذُ", "يأخذُ", "نأخذُ", "تأخذون", "يأخذون"] } },
+            "گذاشتن": { phrase: "کتاب را روی میز", ar_phrase: "الكتاب على الطاولة", ar_verb: { past: ["وضعتُ", "وضعتَ", "وضع", "وضعنا", "وضعتم", "وضعوا"], present: ["أضعُ", "تضعُ", "يضعُ", "نضعُ", "تضعون", "يضعون"] } },
+            "نشستن": { phrase: "روی صندلی", ar_phrase: "على الكرسي", ar_verb: { past: ["جلستُ", "جلستَ", "جلس", "جلسنا", "جلستم", "جلسوا"], present: ["أجلسُ", "تجلسُ", "يجلسُ", "نجلسُ", "تجلسون", "يجلسون"] } },
+            "ایستادن": { phrase: "مقابل در", ar_phrase: "أمام الباب", ar_verb: { past: ["وقفتُ", "وقفتَ", "وقف", "وقفنا", "وقفتم", "وقفوا"], present: ["أقفُ", "تقفُ", "يقفُ", "نقفُ", "تقفون", "يقفون"] } },
+            "بستن": { phrase: "پنجره را", ar_phrase: "النافذة", ar_verb: { past: ["أغلقتُ", "أغلقتَ", "أغلق", "أغلقنا", "أغلقتم", "أغلقوا"], present: ["أُغلقُ", "تُغلقُ", "يُغلقُ", "نُغلقُ", "تُغلقون", "يُغلقون"] } },
+            "شکستن": { phrase: "لیوان را", ar_phrase: "الكأس", ar_verb: { past: ["كسرتُ", "كسرتَ", "كسر", "كسرنا", "كسرتم", "كسروا"], present: ["أكسرُ", "تكسرُ", "يكسرُ", "نكسرُ", "تكسرون", "يكسرون"] } },
+            "دویدن": { phrase: "در پارک", ar_phrase: "في الحديقة", ar_verb: { past: ["ركضتُ", "ركضتَ", "ركض", "ركضنا", "ركضتم", "ركضوا"], present: ["أركضُ", "تركضُ", "يركضُ", "نركضُ", "تركضون", "يركضون"] } },
+            "شدن": { phrase: "پزشک", ar_phrase: "طبيباً", ar_verb: { past: ["أصبحتُ", "أصبحتَ", "أصبح", "أصبحنا", "أصبحتم", "أصبحوا"], present: ["أُصبحُ", "تُصبحُ", "يُصبحُ", "نُصبحُ", "تُصبحون", "يُصبحون"] } },
+            "default": { phrase: "کاری را", ar_phrase: "عملاً ما", ar_verb: null }
         };
 
         let lastConjugationData = {};
         const elements = {};
-        for (const elId of ['verb-select', 'verb-input', 'conjugate-btn', 'conjugation-table', 'table-body', 'verb-info', 'correction-notice', 'examples-section', 'present-examples-btn', 'past-examples-btn', 'sentences-container']) { elements[elId.replace(/-(\w)/g, (_, p1) => p1.toUpperCase())] = document.getElementById(elId); }
-        function deriveStems(verbPart) { if (!verbPart.endsWith('ن')) return null; const pastStem = verbPart.slice(0, -1); let presentStem = ''; if (verbStems[verbPart]) { presentStem = verbStems[verbPart]; } else if (pastStem.endsWith('ید')) { presentStem = pastStem.slice(0, -2); } else if (pastStem.endsWith('است')) { presentStem = pastStem.slice(0, -1); } else if (pastStem.endsWith('خت')) { presentStem = pastStem.slice(0, -2) + 'ز'; } else if (pastStem.endsWith('فت')) { presentStem = pastStem.slice(0, -2) + 'ب'; } else { return null; } return { pastStem, presentStem }; }
-        function conjugate(infinitive) { const finalInfinitive = infinitive.trim(); lastConjugationData.infinitive = finalInfinitive; const isCompound = finalInfinitive.includes(' '); let nounPart = '', verbPart = finalInfinitive, pastStem, presentStem; if (isCompound) { const parts = finalInfinitive.split(' '); nounPart = parts.slice(0, -1).join(' ') + ' '; verbPart = parts[parts.length - 1]; } const derived = deriveStems(verbPart); if (verbStems[finalInfinitive]) { presentStem = verbStems[finalInfinitive].replace(nounPart, ''); pastStem = verbPart.slice(0, -1); } else if (derived) { pastStem = derived.pastStem; presentStem = derived.presentStem; } else { alert(`الفعل "${verbPart}" شاذ أو غير معروف.`); return false; } const fullPastStem = nounPart + pastStem, fullPresentStem = nounPart + presentStem; elements.verbInfo.innerHTML = `<span class="persian-text">المصدر: ${finalInfinitive}</span> | <span class="persian-text">الجذر الماضي: ${fullPastStem}</span> | <span class="persian-text">الجذر المضارع: ${fullPresentStem}</span>`; elements.verbInfo.style.display = 'block'; const pastEndings = ['م', 'ی', '', 'یم', 'ید', 'ند'], presentEndings = ['م', 'ی', 'د', 'یم', 'ید', 'ند']; lastConjugationData.past = pastEndings.map(e => nounPart + pastStem + e); lastConjugationData.present = presentEndings.map(e => (nounPart ? nounPart + 'می‌' : 'می‌') + presentStem + e); lastConjugationData.imperative = generateImperative(verbPart, presentStem, nounPart, isCompound); displayTable(lastConjugationData); }
+        for (const elId of ['verb-select', 'verb-input', 'conjugate-btn', 'conjugation-table', 'table-body', 'verb-info', 'examples-section', 'present-examples-btn', 'past-examples-btn', 'sentences-container', 'correction-notice']) { elements[elId.replace(/-(\w)/g, (_, p1) => p1.toUpperCase())] = document.getElementById(elId); }
+        function deriveStems(verbPart) { if (!verbPart.endsWith('ن')) return null; const pastStem = verbPart.slice(0, -1); let presentStem = ''; if (verbStems[verbPart]) { presentStem = verbStems[verbPart]; } else { return null; } return { pastStem, presentStem }; }
+        function conjugate(infinitive) { const finalInfinitive = infinitive.trim(); if (!finalInfinitive) return; lastConjugationData.infinitive = finalInfinitive; const isCompound = finalInfinitive.includes(' '); let nounPart = '', verbPart = finalInfinitive, pastStem, presentStem; if (isCompound) { const parts = finalInfinitive.split(' '); nounPart = parts.slice(0, -1).join(' ') + ' '; verbPart = parts[parts.length - 1]; } const derived = deriveStems(verbPart); if (verbStems[finalInfinitive] && isCompound) { presentStem = verbStems[finalInfinitive].replace(nounPart, ''); pastStem = verbPart.slice(0, -1); } else if (derived) { pastStem = derived.pastStem; presentStem = derived.presentStem; } else { alert(`الفعل "${verbPart}" شاذ أو غير معروف في قاعدة البيانات، لا يمكن تصريفه تلقائيا.`); return false; } const fullPastStem = nounPart + pastStem, fullPresentStem = nounPart + presentStem; elements.verbInfo.innerHTML = `<span class="persian-text">المصدر: ${finalInfinitive}</span> | <span class="persian-text">الجذر الماضي: ${fullPastStem}</span> | <span class="persian-text">الجذر المضارع: ${fullPresentStem}</span>`; elements.verbInfo.style.display = 'block'; const pastEndings = ['م', 'ی', '', 'یم', 'ید', 'ند'], presentEndings = ['م', 'ی', 'د', 'یم', 'ید', 'ند']; lastConjugationData.past = pastEndings.map(e => nounPart + pastStem + e); lastConjugationData.present = presentEndings.map(e => (nounPart ? nounPart + 'می‌' : 'می‌') + presentStem + e); lastConjugationData.imperative = generateImperative(verbPart, presentStem, nounPart, isCompound); displayTable(lastConjugationData); return true; }
         function generateImperative(verbPart, presentStem, nounPart, isCompound) { let s, p; if (verbPart === 'داشتن') { s = 'داشته باش'; p = 'داشته باشید'; } else if (verbPart === 'بودن') { s = 'باش'; p = 'باشید'; } else if (verbPart === 'آمدن') { s = 'بیا'; p = 'بیایید'; } else { s = (isCompound || presentStem.startsWith('آ')) ? presentStem : `ب${presentStem}`; p = (isCompound || presentStem.startsWith('آ')) ? presentStem + 'ید' : `ب${presentStem}ید`; } return ['', nounPart + s, '', '', nounPart + p, '']; }
         function displayTable(data) { elements.tableBody.innerHTML = ''; pronouns.forEach((p, i) => { const row = document.createElement('tr'); row.innerHTML = `<td class="pronoun-col">${p.fa}<br><small>(${p.ar})</small></td><td>${data.past[i]}</td><td>${data.present[i]}</td><td>${data.imperative[i] || '—'}</td>`; elements.tableBody.appendChild(row); }); elements.conjugationTable.style.display = 'table'; elements.examplesSection.style.display = 'block'; elements.sentencesContainer.style.display = 'none'; }
-        function getSentenceTemplate(infinitive) { if (sentenceTemplates[infinitive]) { return sentenceTemplates[infinitive]; } if (infinitive.endsWith(' کردن') || infinitive.endsWith(' دادن')) { return sentenceTemplates.default_transitive; } if (infinitive.endsWith(' شدن')) { return sentenceTemplates.default_intransitive; } if (!infinitive.includes(' ')) { return sentenceTemplates.default_intransitive; } return sentenceTemplates.default_transitive; }
         
-        // --- 4. دالة توليد الجمل المحدثة للترجمة الكاملة ---
         function generateSentences(tense) {
-            const template = getSentenceTemplate(lastConjugationData.infinitive);
+            const template = sentenceTemplates[lastConjugationData.infinitive] || sentenceTemplates.default;
             const verbs = lastConjugationData[tense];
             let sentencesHTML = '<ul>';
             pronouns.forEach((p, i) => {
                 const persianSentence = `${p.fa} ${template.phrase} ${verbs[i]}`;
                 let arabicTranslation;
-                // التحقق من وجود ترجمة كاملة للفعل
                 if (template.ar_verb && template.ar_verb[tense]) {
                     const arabicVerb = template.ar_verb[tense][i];
                     arabicTranslation = `${p.ar} ${arabicVerb} ${template.ar_phrase}`;
-                } else {
-                    // العودة للطريقة القديمة إذا لم توجد ترجمة كاملة
-                    arabicTranslation = `${p.ar} ... ${template.ar_phrase}`;
-                }
+                } else { arabicTranslation = `${p.ar} ... ${template.ar_phrase}`; }
                 sentencesHTML += `<li><span class="persian-text">${persianSentence.trim()}.</span> <span class="arabic-translation">(${arabicTranslation.trim()})</span></li>`;
             });
             sentencesHTML += '</ul>';
             elements.sentencesContainer.innerHTML = sentencesHTML;
             elements.sentencesContainer.style.display = 'block';
         }
-
         function handleRequest() { const verb = elements.verbInput.value.trim(); if (verb) { conjugate(verb); elements.verbSelect.value = ''; } }
-        
-        // --- 5. تحديث بناء القائمة المنسدلة لإضافة المعنى ---
         let allVerbs = Object.keys(verbStems).sort((a, b) => a.localeCompare(b, 'fa'));
         let optionsHtml = '<option value="">-- اختر فعلاً من القائمة --</option>';
-        allVerbs.forEach(verb => {
-            const meaning = verbMeanings[verb] || ''; // الحصول على المعنى من القاموس الجديد
-            optionsHtml += `<option value="${verb}">${verb} (${meaning})</option>`;
-        });
+        allVerbs.forEach(verb => { const meaning = verbMeanings[verb] || ''; optionsHtml += `<option value="${verb}">${verb} (${meaning})</option>`; });
         elements.verbSelect.innerHTML = optionsHtml;
-
         elements.verbSelect.addEventListener('change', () => { if (elements.verbSelect.value) { conjugate(elements.verbSelect.value); elements.verbInput.value = ''; } });
         elements.conjugateBtn.addEventListener('click', handleRequest);
         elements.verbInput.addEventListener('keypress', (e) => { if (e.key === "Enter") { e.preventDefault(); handleRequest(); } });
