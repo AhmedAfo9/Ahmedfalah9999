@@ -3,356 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>المُصرّف الخبير للأفعال الفارسية (مع الترجمة)</title>
+    <title>تصريف الأفعال | بواسطة احمد فلاح</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --card-bg-color: rgba(255, 255, 255, 0.65);
-            --primary-color: #4a6cf7;
-            --primary-light: #eef2ff;
-            --danger-color: #dc3545;
-            --danger-light: #f8d7da;
-            --text-dark: #1e293b;
+            --card-bg-color: rgba(255, 255, 255, 0.75);
+            --primary-color: #37517e;
+            --primary-dark: #2a3f64;
+            --primary-light: #f0f3f8;
+            --secondary-color: #47b2e4;
+            --text-dark: #2c4964;
             --text-light: #637381;
-            --border-color: rgba(255, 255, 255, 0.25);
-            --shadow-color: rgba(74, 108, 247, 0.15);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --shadow-color: rgba(0, 0, 0, 0.05);
+            --header-height: 55px;
         }
 
-        @keyframes animated-gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        @keyframes animated-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        *, *::before, *::after {
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
+        *, *::before, *::after { box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         html { height: 100%; overflow: hidden; }
 
         body {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            margin: 0;
-            font-family: 'Cairo', 'Tahoma', sans-serif;
-            font-weight: 400;
-            color: var(--text-dark);
-            background: linear-gradient(-45deg, #eef2f7, #e0eaff, #d1ecf1, #c5f0e9);
-            background-size: 400% 400%;
-            animation: animated-gradient 15s ease infinite;
+            display: flex; flex-direction: column; height: 100%; margin: 0;
+            font-family: 'Cairo', 'Tahoma', sans-serif; font-weight: 400; color: var(--text-dark);
+            background-color: #f4f7fc;
         }
 
         .persian-text { font-family: 'Vazirmatn', sans-serif; font-weight: 400; }
         .fw-bold { font-weight: 700 !important; }
 
-        .fixed-header, .fixed-footer {
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 10;
+        .fixed-header {
+            flex-shrink: 0; background: #fff; z-index: 100;
+            border-bottom: 1px solid var(--border-color); height: var(--header-height);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .fixed-header h1 { font-size: 20px; font-weight: 700; color: var(--primary-color); margin: 0; }
+        
+        #controls-sticky-container {
+            position: sticky; top: 0; z-index: 90;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            padding: 15px 20px;
             border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
-        .fixed-header h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-align: center;
-            margin: 12px 0;
-        }
-        .fixed-footer { border-bottom: none; border-top: 1px solid var(--border-color); }
-        .fixed-footer p { text-align: center; margin: 15px 0; color: var(--text-light); font-size: 14px; }
-
+        
         #scroll-wrapper { flex-grow: 1; overflow-y: auto; padding: 25px 15px; }
 
-        #main-container {
-            background: var(--card-bg-color);
-            padding: 30px 35px;
-            border-radius: 24px;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 0 10px 40px var(--shadow-color);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            transition: all 0.3s ease;
+        .container {
+            width: 100%; max-width: 850px; margin: 0 auto;
         }
 
-        h2 {
-            font-size: 20px;
-            font-weight: 600;
-            margin: 25px 0 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--primary-color);
-            color: var(--text-dark);
+        h2.controls-title {
+            font-size: 16px; font-weight: 600; margin: 0 0 10px 0;
+            color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;
         }
-        h2:first-of-type { margin-top: 0; }
         
         #verb-select, #verb-input {
-            width: 100%;
-            padding: 14px 18px;
-            font-size: 17px;
-            border-radius: 10px;
-            border: 1px solid rgba(0,0,0,0.1);
-            background-color: rgba(255, 255, 255, 0.8);
+            width: 100%; padding: 12px 15px; font-size: 16px; border-radius: 8px;
+            border: 1px solid #ced4da; background-color: #fff;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
+        #verb-select { margin-bottom: 15px; }
         #verb-select:focus, #verb-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px var(--primary-light);
-            background-color: #fff;
+            outline: none; border-color: var(--primary-dark);
+            box-shadow: 0 0 0 3px rgba(42, 63, 100, 0.15);
         }
         #verb-input { direction: ltr; text-align: right; }
 
         #conjugate-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 16px;
-            margin-top: 15px;
-            font-size: 18px;
-            font-weight: 600;
-            color: #fff;
-            background: linear-gradient(45deg, var(--primary-color), #6a82fb);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+            padding: 14px; margin-top: 15px; font-size: 17px; font-weight: 600; color: #fff;
+            background-color: var(--primary-color);
+            border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.2s, transform 0.1s;
         }
-        #conjugate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(74, 108, 247, 0.3);
-        }
-        #conjugate-btn:active { transform: translateY(0); }
-        #conjugate-btn .loader {
-            width: 18px; height: 18px;
-            border: 2px solid #fff;
-            border-bottom-color: transparent;
-            border-radius: 50%;
-            display: none;
-            animation: rotation 1s linear infinite;
-        }
+        #conjugate-btn:hover { background-color: var(--primary-dark); }
+        #conjugate-btn:active { transform: scale(0.98); }
+        #conjugate-btn .loader { width: 18px; height: 18px; border: 2px solid #fff; border-bottom-color: transparent; border-radius: 50%; display: none; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        #results-container {
-            margin-top: 25px;
-            transition: all 0.5s ease;
-        }
-        .hidden-results {
-            opacity: 0;
-            transform: translateY(20px);
-            max-height: 0;
-            overflow: hidden;
-        }
-        .visible-results {
-            opacity: 1;
-            transform: translateY(0);
-            max-height: 1500px; /* A large enough value */
-        }
+        #results-container { margin-top: 10px; transition: all 0.5s ease; }
+        .hidden-results { opacity: 0; transform: translateY(20px); max-height: 0; overflow: hidden; }
+        .visible-results { opacity: 1; transform: translateY(0); max-height: 10000px; /* Large enough value */ }
         
-        .notification {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 14px;
-            border-radius: 10px;
-            display: none;
-        }
-        #correction-notice { background-color: var(--primary-light); color: var(--primary-color); border: 1px solid var(--primary-color); }
-        #verb-info { background-color: #f8f9fa; border: 1px solid rgba(0,0,0,0.1); font-size: 15px; }
-        #error-notice { background-color: var(--danger-light); color: var(--danger-color); border: 1px solid var(--danger-color); }
+        .notification { text-align: center; margin-bottom: 20px; padding: 12px; border-radius: 8px; display: none; border: 1px solid; font-size: 15px; }
+        #correction-notice { background-color: #e7f3fe; color: #0c5460; border-color: #b8daff; }
+        #verb-info { background-color: var(--primary-light); color: var(--text-dark); border-color: #dce4f3; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px 15px; }
+        #error-notice { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
         
-        .table-responsive { width: 100%; overflow-x: auto; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; }
-        #conjugation-table {
-            width: 100%;
-            border-collapse: collapse;
+        .section-card {
+            background: #fff; border-radius: 12px;
+            box-shadow: 0 5px 25px var(--shadow-color);
+            margin-bottom: 25px; animation: fade-in 0.5s ease;
         }
-        #conjugation-table th, #conjugation-table td {
-            border: none;
-            padding: 14px;
-            text-align: center;
-            font-size: 16px;
-            vertical-align: middle;
+        .section-header {
+            padding: 15px 20px; border-bottom: 1px solid #f0f0f0;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        #conjugation-table th {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
+        .section-title { font-size: 18px; font-weight: 700; color: var(--primary-dark); margin: 0; }
+        .section-content { padding: 20px; }
+
+        #negation-toggle { display: flex; gap: 5px; background-color: var(--primary-light); border-radius: 8px; padding: 5px; }
+        #negation-toggle button {
+            flex-grow: 1; padding: 8px 12px; border: none; background: transparent;
+            color: var(--text-light); font-weight: 600; font-size: 14px;
+            border-radius: 6px; cursor: pointer; transition: all 0.2s ease-in-out;
         }
-        #conjugation-table tbody tr:nth-child(even) { background-color: rgba(238, 242, 255, 0.7); }
-        #conjugation-table tbody tr:hover { background-color: rgba(226, 232, 240, 0.8); }
+        #negation-toggle button.active { background: var(--primary-color); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        #participles-list { display: flex; justify-content: space-around; text-align: center; }
+        .participle-item .label { font-size: 14px; color: var(--text-light); margin-bottom: 5px; }
+        .participle-item .value { font-size: 18px; font-weight: 600; color: var(--primary-dark); }
+        
+        #mobile-conjugation-view { display: none; flex-direction: column; gap: 15px; }
+        .conjugation-card { background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.07); overflow: hidden; animation: fade-in 0.5s ease forwards; }
+        .card-header { background: var(--primary-dark); color: #fff; padding: 12px 15px; font-size: 18px; font-weight: 600; }
+        .card-header small { opacity: 0.8; }
+        .card-body { padding: 10px 15px; }
+        .tense-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .tense-row:last-child { border-bottom: none; }
+        .tense-label { font-size: 14px; color: var(--text-light); }
+        .tense-value { font-size: 17px; color: var(--text-dark); font-weight: 600; }
+        .imperative-placeholder { color: #ccc; }
+
+        .table-responsive { width: 100%; overflow-x: auto; }
+        #conjugation-table { width: 100%; border-collapse: collapse; }
+        #conjugation-table th, #conjugation-table td { border: 1px solid #dee2e6; padding: 12px; text-align: center; font-size: 16px; vertical-align: middle; }
+        #conjugation-table th { background-color: var(--primary-color); color: white; font-weight: 600; font-size: 15px; }
+        #conjugation-table tbody tr:nth-child(even) { background-color: var(--primary-light); }
+        #conjugation-table tbody tr:hover { background-color: #e9ecef; }
         #conjugation-table td.pronoun-col { font-weight: 600; color: var(--text-dark); }
         #conjugation-table td small { color: var(--text-light); font-size: 12px; }
 
-        #examples-section { margin-top: 30px; padding-top: 25px; border-top: 1px dashed rgba(0,0,0,0.1); }
         #example-options { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
         #example-options button {
-            background: transparent;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-            padding: 10px 25px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            background-color: var(--secondary-color); color: #fff; border: none;
+            padding: 10px 25px; border-radius: 50px; cursor: pointer;
+            font-size: 16px; font-weight: 600; transition: all 0.2s ease;
         }
-        #example-options button:hover { background-color: var(--primary-color); color: #fff; }
-
-        #sentences-container {
-            margin-top: 25px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 12px;
-            display: none;
-        }
+        #example-options button:hover { background-color: #31a4d3; transform: translateY(-2px); }
+        #sentences-container { margin-top: 20px; padding: 0; }
         #sentences-container ul { list-style-type: none; padding: 0; margin: 0; }
-        #sentences-container li { font-size: 17px; padding: 12px 0; border-bottom: 1px solid #e9ecef; }
+        #sentences-container li { font-size: 17px; padding: 15px 10px; border-bottom: 1px solid #e9ecef; }
         #sentences-container li:last-child { border-bottom: none; }
         .arabic-translation { color: var(--text-light); font-size: 14px; margin-right: 10px;}
 
         @media (max-width: 768px) {
-            #scroll-wrapper { padding: 20px 10px; }
-            .fixed-header h1 { font-size: 20px; }
-            #main-container { padding: 20px 15px; }
-            h2 { font-size: 18px; }
+            #controls-sticky-container { padding: 10px; }
+            #scroll-wrapper { padding: 10px 5px; }
+            .section-card { border-radius: 0; margin-bottom: 15px; }
+            .table-responsive { display: none; }
+            #mobile-conjugation-view { display: flex; }
+        }
+        @media (min-width: 769px) {
+            .table-responsive { display: block; }
+            #mobile-conjugation-view { display: none; }
         }
     </style>
 </head>
 <body>
-    <header class="fixed-header"><h1 class="persian-text">المُصرّف الخبير للأفعال الفارسية</h1></header>
+    <header class="fixed-header"><h1>تصريف الأفعال | بواسطة احمد فلاح</h1></header>
+    
+    <div id="controls-sticky-container">
+        <div class="container">
+            <h2 class="controls-title persian-text">الفعل المُراد تصريفه</h2>
+            <select id="verb-select" class="persian-text"></select>
+            <input type="text" id="verb-input" class="persian-text" placeholder="أو اكتب مصدر الفعل هنا...">
+            <button id="conjugate-btn">
+                <span id="btn-text">صَرّف</span>
+                <div class="loader"></div>
+            </button>
+        </div>
+    </div>
     
     <div id="scroll-wrapper">
-        <div id="main-container">
-            <div id="controls-container">
-                <h2 class="persian-text">۱. انتخاب از لیست</h2>
-                <div class="input-section"><select id="verb-select" class="persian-text"></select></div>
-                
-                <h2 class="persian-text">۲. یا نوشتن مصدر فعل</h2>
-                <div class="input-section">
-                    <input type="text" id="verb-input" class="persian-text" placeholder="اكتب أي مصدر فعل... سيتم تصحيح الحروف تلقائياً">
-                    <button id="conjugate-btn">
-                        <span id="btn-text">صَرّف الفعل</span>
-                        <div class="loader"></div>
-                    </button>
-                </div>
-            </div>
-            
+        <div id="main-container" class="container">
             <div id="error-notice" class="notification"></div>
             <div id="results-container" class="hidden-results">
                 <div id="correction-notice" class="notification"></div>
                 <div id="verb-info" class="notification"></div>
-                <div class="table-responsive"><table id="conjugation-table"><thead ><tr><th class="pronoun-col">الضمير</th><th class="persian-text">ماضی ساده</th><th class="persian-text">حال اخباری</th><th class="persian-text">امر</th></tr></thead><tbody id="table-body" class="persian-text"></tbody></table></div>
-                <div id="examples-section">
-                    <div id="example-options">
-                        <button id="present-examples-btn" class="persian-text">جملات حال (مضارع)</button>
-                        <button id="past-examples-btn" class="persian-text">جملات گذشته (ماضی)</button>
+
+                <div class="section-card" id="participles-section">
+                    <div class="section-header">
+                        <h3 class="section-title persian-text">المشتقات اللغوية</h3>
                     </div>
-                    <div id="sentences-container"></div>
+                    <div class="section-content">
+                        <div id="participles-list"></div>
+                    </div>
+                </div>
+
+                <div class="section-card" id="conjugation-section">
+                    <div class="section-header">
+                        <h3 class="section-title persian-text">جدول التصريفات</h3>
+                        <div id="negation-toggle">
+                            <button id="positive-btn" class="active">مثبت</button>
+                            <button id="negative-btn">منفي</button>
+                        </div>
+                    </div>
+                    <div class="section-content" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table id="conjugation-table">
+                                <thead>
+                                    <tr>
+                                        <th class="pronoun-col">الضمير</th>
+                                        <th class="persian-text">ماضی ساده</th>
+                                        <th class="persian-text">حال اخباری</th>
+                                        <th class="persian-text">حال استمراری</th>
+                                        <th class="persian-text">امر</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body" class="persian-text"></tbody>
+                            </table>
+                        </div>
+                        <div id="mobile-conjugation-view"></div>
+                    </div>
+                </div>
+
+                <div class="section-card" id="examples-section">
+                    <div class="section-header">
+                        <h3 class="section-title persian-text">جمل تطبيقية</h3>
+                    </div>
+                    <div class="section-content">
+                         <div id="example-options">
+                            <button id="present-continuous-examples-btn" class="persian-text">جمل حال استمراری</button>
+                            <button id="present-examples-btn" class="persian-text">جمل حال اخباری</button>
+                            <button id="past-examples-btn" class="persian-text">جملات گذشته</button>
+                        </div>
+                        <div id="sentences-container"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="fixed-footer"><p>تم التطوير بواسطة احمد فلاح عريبي |  2025</p></footer>
-
     <script>
         // --- DATA ---
         const pronouns = [ { fa: "من", ar: "أنا" }, { fa: "تو", ar: "أنت" }, { fa: "او", ar: "هو/هي" }, { fa: "ما", ar: "نحن" }, { fa: "شما", ar: "أنتم" }, { fa: "آنها", ar: "هم" } ];
-        
-        // --- ** قاعدة البيانات الدلالية الجديدة والمدققة ** ---
-        const verbData = {
-            "آفریدن": { stem: "آفرین", category: "creation", object: { fa: "یک اثر هنری را", ar: "عملاً فنياً" }, ar_verb: { past: ["خلقتُ","خلقتَ","خلق","خلقنا","خلقتم","خلقوا"], present: ["أخلقُ","تخلقُ","يخلقُ","نخلقُ","تخلقون","يخلقون"] } },
-            "آمدن": { stem: "آ", category: "motion", prep_phrase: { fa: "به مهمانی", ar: "إلى الحفلة" }, ar_verb: { past: ["أتيتُ","أتيتَ","أتى","أتينا","أتيتم","أتوا"], present: ["آتي","تأتي","يأتي","نأتي","تأتون","يأتون"] } },
-            "آوردن": { stem: "آور", category: "motion_transitive", object: { fa: "خبرهای خوب را", ar: "أخباراً جيدة" }, ar_verb: { past: ["أحضرتُ","أحضرتَ","أحضر","أحضرنا","أحضرتم","أحضروا"], present: ["أُحضرُ","تُحضرُ","يُحضرُ","نُحضرُ","تُحضرون","يُحضرون"] } },
-            "انداختن": { stem: "انداز", category: "motion_transitive", object: { fa: "نگاهی سریع", ar: "نظرة سريعة" }, ar_verb: { past: ["ألقيتُ","ألقيتَ","ألقى","ألقينا","ألقيتم","ألقوا"], present: ["أُلقي","تُلقي","يُلقي","نُلقي","تُلقون","يُلقون"] } },
-            "ایستادن": { stem: "ایست", category: "state_intransitive", prep_phrase: { fa: "جلوی آینه", ar: "أمام المرآة" }, ar_verb: { past: ["وقفتُ","وقفتَ","وقف","وقفنا","وقفتم","وقفوا"], present: ["أقفُ","تقفُ","يقفُ","نقفُ","تقفون","يقفون"] } },
-            "باز کردن": { stem: "باز کن", category: "action_transitive", object: { fa: "کتاب را", ar: "الكتاب" }, ar_verb: { past: ["فتحتُ","فتحتَ","فتح","فتحنا","فتحتم","فتحوا"], present: ["أفتحُ","تفتحُ","يفتحُ","نفتحُ","تفتحون","يفتحون"] } },
-            "بازی کردن": { stem: "بازی کن", category: "action_transitive", object: { fa: "در پارک", ar: "في الحديقة" }, ar_verb: { past: ["لعبتُ","لعبتَ","لعب","لعبنا","لعبتم","لعبوا"], present: ["ألعبُ","تلعبُ","يلعبُ","نلعبُ","تلعبون","يلعبون"] } },
-            "باور کردن": { stem: "باور کن", category: "cognition", object: { fa: "داستان او را", ar: "قصته" }, ar_verb: { past: ["صدقتُ","صدقتَ","صدق","صدقنا","صدقتم","صدقوا"], present: ["أصدقُ","تصدقُ","يصدقُ","نصدقُ","تصدقون","يصدقون"] } },
-            "بخشیدن": { stem: "بخش", category: "social", object: { fa: "اشتباه دوستم را", ar: "خطأ صديقي" }, ar_verb: { past: ["سامحتُ","سامحتَ","سامح","سامحنا","سامحتم","سامحوا"], present: ["أسامحُ","تسامحُ","يسامحُ","نسامحُ","تسامحون","يسامحون"] } },
-            "بردن": { stem: "بر", category: "motion_transitive", object: { fa: "جایزه اول را", ar: "بالجائزة الأولى" }, ar_verb: { past: ["فزتُ","فزتَ","فاز","فزنا","فزتم","فازوا"], present: ["أفوزُ","تفوزُ","يفوزُ","نفوزُ","تفوزون","يفوزون"] } },
-            "بستن": { stem: "بند", category: "action_transitive", object: { fa: "در را", ar: "الباب" }, ar_verb: { past: ["أغلقتُ","أغلقتَ","أغلق","أغلقنا","أغلقتم","أغلقوا"], present: ["أُغلقُ","تُغلقُ","يُغلقُ","نُغلقُ","تُغلقون","يُغلقون"] } },
-            "بلند کردن": { stem: "بلند کن", category: "action_transitive", object: { fa: "صدایم را", ar: "صوتي" }, ar_verb: { past: ["رفعتُ","رفعتَ","رفع","رفعنا","رفعتم","رفعوا"], present: ["أرفعُ","ترفعُ","يرفعُ","نرفعُ","ترفعون","يرفعون"] } },
-            "به یاد آوردن": { stem: "به یاد آور", category: "cognition", object: { fa: "یک خاطره قدیمی را", ar: "ذكرى قديمة" }, ar_verb: { past: ["تذكرتُ","تذكرتَ","تذكر","تذكرنا","تذكرتم","تذكروا"], present: ["أتذكرُ","تتذكرُ","يتذكرُ","نتذكرُ","تتذكرون","يتذكرون"] } },
-            "بودن": { stem: "باش", category: "state_linking", complement: { fa: "خوشحال", ar: "سعيداً" }, ar_verb: { past: ["كنتُ","كنتَ","كان","كنا","كنتم","كانوا"], present: ["أكونُ","تكونُ","يكونُ","نكونُ","تكونون","يكونون"] } },
-            "پذیرفتن": { stem: "پذیر", category: "social", object: { fa: "یک مسئولیت جدید را", ar: "مسؤولية جديدة" }, ar_verb: { past: ["قبلتُ","قبلتَ","قبل","قبلنا","قبلتم","قبلوا"], present: ["أقبلُ","تقبلُ","يقبلُ","نقبلُ","تقبلون","يقبلون"] } },
-            "پریدن": { stem: "پر", category: "motion_intransitive", prep_phrase: { fa: "از خوشحالی", ar: "من الفرح" }, ar_verb: { past: ["قفزتُ","قفزتَ","قفز","قفزنا","قفزتم","قفزوا"], present: ["أقفزُ","تقفزُ","يقفزُ","نقفزُ","تقفزون","يقفزون"] } },
-            "پرسیدن": { stem: "پرس", category: "communication", object: { fa: "یک سوال مهم را", ar: "سؤالاً مهماً" }, ar_verb: { past: ["سألتُ","سألتَ","سأل","سألنا","سألتم","سألوا"], present: ["أسألُ","تسألُ","يسألُ","نسألُ","تسألون","يسألون"] } },
-            "پیدا کردن": { stem: "پیدا کن", category: "cognition", object: { fa: "یک راه حل", ar: "حلاً" }, ar_verb: { past: ["وجدتُ","وجدتَ","وجد","وجدنا","وجدتم","وجدوا"], present: ["أجدُ","تجدُ","يجدُ","نجدُ","تجدون","يجدون"] } },
-            "پوشیدن": { stem: "پوش", category: "action_transitive", object: { fa: "لباس رسمی را", ar: "الملابس الرسمية" }, ar_verb: { past: ["ارتديتُ","ارتديتَ","ارتدى","ارتدينا","ارتديتم","ارتدوا"], present: ["أرتدي","ترتدي","يرتدي","نرتدي","ترتدون","يرتدون"] } },
-            "ترسیدن": { stem: "ترس", category: "emotion", prep_phrase: { fa: "از ارتفاع", ar: "من المرتفعات" }, ar_verb: { past: ["خفتُ","خفتَ","خاف","خفنا","خفتم","خافوا"], present: ["أخافُ","تخافُ","يخافُ","نخافُ","تخافون","يخافون"] } },
-            "تنظیم کردن": { stem: "تنظیم کن", category: "action_transitive", object: { fa: "قرار ملاقات را", ar: "الموعد" }, ar_verb: { past: ["نظمتُ","نظمتَ","نظم","نظمنا","نظمتم","نظموا"], present: ["أنظمُ","تنظمُ","ينظمُ","ننظمُ","تنظمون","ينظمون"] } },
-            "توانستن": { stem: "توان", category: "modal", infinitive_phrase: { fa: "مشکل را حل کند", ar: "أن يحل المشكلة" }, ar_verb: { past: ["استطعتُ","استطعتَ","استطاع","استطعنا","استطعتم","استطاعوا"], present: ["أستطيعُ","تستطيعُ","يستطيعُ","نستطيعُ","تستطيعون","يستطيعون"] } },
-            "توضیح دادن": { stem: "توضیح ده", category: "communication", object: { fa: "ایده خود را", ar: "فكرته" }, ar_verb: { past: ["شرحتُ","شرحتَ","شرح","شرحنا","شرحتم","شرحوا"], present: ["أشرحُ","تشرحُ","يشرحُ","نشرحُ","تشرحون","يشرحون"] } },
-            "جنگیدن": { stem: "جنگ", category: "social", prep_phrase: { fa: "با مشکلات", ar: "مع المشاكل" }, ar_verb: { past: ["صارعتُ","صارعتَ","صارع","صارعنا","صارعتم","صارعوا"], present: ["أصارعُ","تصارعُ","يصارعُ","نصارعُ","تصارعون","يصارعون"] } },
-            "حرکت کردن": { stem: "حرکت کن", category: "motion_intransitive", prep_phrase: { fa: "به سوی هدف", ar: "نحو الهدف" }, ar_verb: { past: ["تحركتُ","تحركتَ","تحرك","تحركنا","تحركتم","تحركوا"], present: ["أتحركُ","تتحركُ","يتحركُ","نتحركُ","تتحركون","يتحركون"] } },
-            "خواستن": { stem: "خواه", category: "cognition", object: { fa: "موفقیت", ar: "النجاح" }, ar_verb: { past: ["أردتُ","أردتَ","أراد","أردنا","أردتم","أرادوا"], present: ["أريدُ","تريدُ","يريدُ","نريدُ","تريدون","يريدون"] } },
-            "خواندن": { stem: "خوان", category: "communication", object: { fa: "یک رمان", ar: "رواية" }, ar_verb: { past: ["قرأتُ","قرأتَ","قرأ","قرأنا","قرأتم","قرأوا"], present: ["أقرأُ","تقرأُ","يقرأُ","نقرأُ","تقرأون","يقرأون"] } },
-            "خریدن": { stem: "خر", category: "transaction", object: { fa: "یک هدیه", ar: "هدية" }, ar_verb: { past: ["اشتريتُ","اشتريتَ","اشترى","اشترينا","اشتريتم","اشتروا"], present: ["أشتري","تشتري","يشتري","نشتري","تشترون","يشترون"] } },
-            "خندیدن": { stem: "خند", category: "emotion", prep_phrase: { fa: "به یک جوک", ar: "على نكتة" }, ar_verb: { past: ["ضحكتُ","ضحكتَ","ضحك","ضحكنا","ضحكتم","ضحكوا"], present: ["أضحكُ","تضحكُ","يضحكُ","نضحكُ","تضحكون","يضحكون"] } },
-            "خوابیدن": { stem: "خواب", category: "state_intransitive", prep_phrase: { fa: "روی تخت", ar: "على السرير" }, ar_verb: { past: ["نمتُ","نمتَ","نام","نمنا","نمتم","ناموا"], present: ["أنامُ","تنامُ","ينامُ","ننامُ","تنامون","ينامون"] } },
-            "خوردن": { stem: "خور", category: "ingestion", object: { fa: "یک سیب", ar: "تفاحة" }, ar_verb: { past: ["أكلتُ","أكلتَ","أكل","أكلنا","أكلتم","أكلوا"], present: ["آكلُ","تأكلُ","يأكلُ","نأكلُ","تأكلون","يأكلون"] } },
-            "دادن": { stem: "ده", category: "transaction", object: { fa: "یک کتاب به او", ar: "كتاباً له" }, ar_verb: { past: ["أعطيتُ", "أعطيتَ", "أعطى", "أعطينا", "أعطيتم", "أعطوا"], present: ["أعطي", "تعطي", "يعطي", "نعطي", "تعطون", "يعطون"] } },
-            "داشتن": { stem: "دار", category: "possession", object: { fa: "یک ایده خوب", ar: "فكرة جيدة" }, ar_verb: { past: ["كان لديّ", "كان لديكَ", "كان لديه", "كان لدينا", "كان لديكم", "كان لديهم"], present: ["لديّ", "لديكَ", "لديه", "لدينا", "لديكم", "لديهم"] } },
-            "دانستن": { stem: "دان", category: "cognition", object: { fa: "حقیقت را", ar: "الحقيقة" }, ar_verb: { past: ["عرفتُ","عرفتَ","عرف","عرفنا","عرفتم","عرفوا"], present: ["أعرفُ","تعرفُ","يعرفُ","نعرفُ","تعرفون","يعرفون"] } },
-            "دنبال کردن": { stem: "دنبال کن", category: "action_transitive", object: { fa: "اخبار را", ar: "الأخبار" }, ar_verb: { past: ["تابعتُ","تابعتَ","تابع","تابعنا","تابعتم","تابعوا"], present: ["أتابعُ","تتابعُ","يتابعُ","نتابعُ","تتابعون","يتابعون"] } },
-            "دویدن": { stem: "دو", category: "motion_intransitive", prep_phrase: { fa: "در مسابقه", ar: "في السباق" }, ar_verb: { past: ["ركضتُ","ركضتَ","ركض","ركضنا","ركضتم","ركضوا"], present: ["أركضُ","تركضُ","يركضُ","نركضُ","تركضون","يركضون"] } },
-            "دیدن": { stem: "بین", category: "perception", object: { fa: "یک فیلم", ar: "فيلماً" }, ar_verb: { past: ["شاهدتُ","شاهدتَ","شاهد","شاهدنا","شاهدتم","شاهدوا"], present: ["أُشاهد","تُشاهد","يُشاهد","نُشاهد","تُشاهدون","يُشاهدون"] } },
-            "راه رفتن": { stem: "راه رو", category: "motion_intransitive", prep_phrase: { fa: "در ساحل", ar: "على الشاطئ" }, ar_verb: { past: ["مشيتُ","مشيتَ","مشى","مشينا","مشيتم","مشوا"], present: ["أمشي","تمشي","يمشي","نمشي","تمشون","يمشون"] } },
-            "رفتن": { stem: "رو", category: "motion_intransitive", prep_phrase: { fa: "به دانشگاه", ar: "إلى الجامعة" }, ar_verb: { past: ["ذهبتُ","ذهبتَ","ذهب","ذهبنا","ذهبتم","ذهبوا"], present: ["أذهبُ","تذهبُ","يذهبُ","نذهبُ","تذهبون","يذهبون"] } },
-            "زنگ زدن": { stem: "زنگ زن", category: "communication", prep_phrase: { fa: "به خانواده", ar: "بالعائلة" }, ar_verb: { past: ["اتصلتُ","اتصلتَ","اتصل","اتصلنا","اتصلتم","اتصلوا"], present: ["أتصلُ","تتصلُ","يتصلُ","نتصلُ","تتصلون","يتصلون"] } },
-            "زندگی کردن": { stem: "زندگی کن", category: "state_intransitive", prep_phrase: { fa: "در یک شهر بزرگ", ar: "في مدينة كبيرة" }, ar_verb: { past: ["عشتُ","عشتَ","عاش","عشنا","عشتم","عاشوا"], present: ["أعيشُ","تعيشُ","يعيشُ","نعيشُ","تعيشون","يعيشون"] } },
-            "ساختن": { stem: "ساز", category: "creation", object: { fa: "یک خانه زیبا", ar: "بيتاً جميلاً" }, ar_verb: { past: ["بنيتُ","بنيتَ","بنى","بنينا","بنيتم","بنوا"], present: ["أبني","تبني","يبني","نبني","تبنون","يبنون"] } },
-            "سعی کردن": { stem: "سعی کن", category: "action_intransitive", prep_phrase: { fa: "بهترین باشد", ar: "أن يكون الأفضل" }, ar_verb: { past: ["حاولتُ","حاولتَ","حاول","حاولنا","حاولتم","حاولوا"], present: ["أحاولُ","تحاولُ","يحاولُ","نحاولُ","تحاولون","يحاولون"] } },
-            "سفر کردن": { stem: "سفر کن", category: "motion_intransitive", prep_phrase: { fa: "به یک کشور جدید", ar: "إلى بلد جديد" }, ar_verb: { past: ["سافرتُ","سافرتَ","سافر","سافرنا","سافرتم","سافروا"], present: ["أسافرُ","تسافرُ","يسافرُ","نسافرُ","تسافرون","يسافرون"] } },
-            "شناختن": { stem: "شناس", category: "cognition", object: { fa: "دوستان واقعی را", ar: "الأصدقاء الحقيقيين" }, ar_verb: { past: ["عرفتُ","عرفتَ","عرف","عرفنا","عرفتم","عرفوا"], present: ["أعرفُ","تعرفُ","يعرفُ","نعرفُ","تعرفون","يعرفون"] } },
-            "شنیدن": { stem: "شنو", category: "perception", object: { fa: "صدای موسیقی را", ar: "صوت الموسيقى" }, ar_verb: { past: ["سمعتُ","سمعتَ","سمع","سمعنا","سمعتم","سمعوا"], present: ["أسمعُ","تسمعُ","يسمعُ","نسمعُ","تسمعون","يسمعون"] } },
-            "شدن": { stem: "شو", category: "change_of_state", complement: { fa: "یک معلم", ar: "معلماً" }, ar_verb: { past: ["أصبحتُ","أصبحتَ","أصبح","أصبحنا","أصبحتم","أصبحوا"], present: ["أُصبحُ","تُصبحُ","يُصبحُ","نُصبحُ","تُصبحون","يُصبحون"] } },
-            "شروع کردن": { stem: "شروع کن", category: "action_transitive", object: { fa: "یک فصل جدید", ar: "فصلاً جديداً" }, ar_verb: { past: ["بدأتُ","بدأتَ","بدأ","بدأنا","بدأتم","بدأوا"], present: ["أبدأُ","تبدأُ","يبدأُ","نبدأُ","تبدأون","يبدأون"] } },
-            "شکستن": { stem: "شکن", category: "action_transitive", object: { fa: "یک لیوان را", ar: "كأساً" }, ar_verb: { past: ["كسرتُ","كسرتَ","كسر","كسرنا","كسرتم","كسروا"], present: ["أكسرُ","تكسرُ","يكسرُ","نكسرُ","تكسرون","يكسرون"] } },
-            "صحبت کردن": { stem: "صحبت کن", category: "communication", prep_phrase: { fa: "درباره آینده", ar: "عن المستقبل" }, ar_verb: { past: ["تحدثتُ","تحدثتَ","تحدث","تحدثنا","تحدثتم","تحدثوا"], present: ["أتحدثُ","تتحدثُ","يتحدثُ","نتحدثُ","تتحدثون","يتحدثون"] } },
-            "فروختن": { stem: "فروش", category: "transaction", object: { fa: "ماشین قدیمی را", ar: "السيارة القديمة" }, ar_verb: { past: ["بعتُ","بعتَ","باع","بعنا","بعتم","باعوا"], present: ["أبيعُ","تبيعُ","يبيعُ","نبيعُ","تبيعون","يبيعون"] } },
-            "فکر کردن": { stem: "فکر کن", category: "cognition", prep_phrase: { fa: "به گذشته", ar: "في الماضي" }, ar_verb: { past: ["فكرتُ", "فكرتَ", "فكر", "فكرنا", "فكرتم", "فكروا"], present: ["أفكرُ", "تفكرُ", "يفكرُ", "نفكرُ", "تفكرون", "يفكرون"] } },
-            "فهمیدن": { stem: "فهم", category: "cognition", object: { fa: "درس را به خوبی", ar: "الدرس جيداً" }, ar_verb: { past: ["فهمتُ","فهمتَ","فهم","فهمنا","فهمتم","فهموا"], present: ["أفهمُ","تفهمُ","يفهمُ","نفهمُ","تفهمون","يفهمون"] } },
-            "کار کردن": { stem: "کار کن", category: "action_intransitive", prep_phrase: { fa: "در یک شرکت", ar: "في شركة" }, ar_verb: { past: ["عملتُ", "عملتَ", "عمل", "عملنا", "عملتم", "عملوا"], present: ["أعملُ", "تعملُ", "يعملُ", "نعملُ", "تعملون", "يعملون"] } },
-            "کشتن": { stem: "کش", category: "action_transitive", object: { fa: "وقت را", ar: "الوقت" }, ar_verb: { past: ["قتلتُ","قتلتَ","قتل","قتلنا","قتلتم","قتلوا"], present: ["أقتلُ","تقتلُ","يقتلُ","نقتلُ","تقتلون","يقتلون"] } },
-            "کمک کردن": { stem: "کمک کن", category: "social", prep_phrase: { fa: "به نیازمندان", ar: "للمحتاجين" }, ar_verb: { past: ["ساعدتُ","ساعدتَ","ساعد","ساعدنا","ساعدتم","ساعدوا"], present: ["أساعدُ","تساعدُ","يساعدُ","نساعدُ","تساعدون","يساعدون"] } },
-            "کنار زدن": { stem: "کنار زن", category: "action_transitive", object: { fa: "پرده را", ar: "الستار" }, ar_verb: { past: ["أزحتُ","أزحتَ","أزاح","أزحنا","أزحتم","أزاحوا"], present: ["أُزيحُ","تُزيحُ","يُزيحُ","نُزيحُ","تُزيحون","يُزيحون"] } },
-            "گذاشتن": { stem: "گذار", category: "action_transitive", object: { fa: "کتاب را روی میز", ar: "الكتاب على الطاولة" }, ar_verb: { past: ["وضعتُ", "وضعتَ", "وضع", "وضعنا", "وضعتم", "وضعوا"], present: ["أضعُ", "تضعُ", "يضعُ", "نضعُ", "تضعون", "يضعون"] } },
-            "گرفتن": { stem: "گیر", category: "possession", object: { fa: "یک عکس", ar: "صورة" }, ar_verb: { past: ["التقطتُ", "التقطتَ", "التقط", "التقطنا", "التقطتم", "التقطوا"], present: ["ألتقطُ", "تلتقطُ", "يلتقطُ", "نلتقطُ", "تلتقطون", "يلتقطون"] } },
-            "گفتن": { stem: "گو", category: "communication", object: { fa: "یک داستان را", ar: "قصة" }, ar_verb: { past: ["حكيتُ","حكيتَ","حكى","حكينا","حكيتم","حكوا"], present: ["أحكي","تحكي","يحكي","نحكي","تحكون","يحكون"] } },
-            "گم شدن": { stem: "گم شو", category: "state_intransitive", prep_phrase: { fa: "در جنگل", ar: "في الغابة" }, ar_verb: { past: ["ضعتُ","ضعتَ","ضاع","ضعنا","ضعتم","ضاعوا"], present: ["أضيعُ","تضيعُ","يضيعُ","نضيعُ","تضيعون","يضيعون"] } },
-            "گم کردن": { stem: "گم کن", category: "action_transitive", object: { fa: "راه را", ar: "الطريق" }, ar_verb: { past: ["أضعتُ", "أضعتَ", "أضاع", "أضعنا", "أضعتم", "أضاعوا"], present: ["أُضيعُ", "تُضيعُ", "يُضيعُ", "نُضيعُ", "تُضيعون", "يُضيعون"] } },
-            "گوش دادن": { stem: "گوش ده", category: "perception", prep_phrase: { fa: "به پادکست", ar: "للبودكاست" }, ar_verb: { past: ["استمعتُ", "استمعتَ", "استمع", "استمعنا", "استمعتم", "استمعوا"], present: ["أستمعُ", "تستمعُ", "يستمعُ", "نستمعُ", "تستمعون", "يستمعون"] } },
-            "مردن": { stem: "میر", category: "state_intransitive", prep_phrase: { fa: "از خنده", ar: "من الضحك" }, ar_verb: { past: ["متُّ","متَّ","مات","متنا","متم","ماتوا"], present: ["أموتُ","تموتُ","يموتُ","نموتُ","تموتون","يموتون"] } },
-            "نشستن": { stem: "نشین", category: "state_intransitive", prep_phrase: { fa: "کنار پنجره", ar: "بجانب النافذة" }, ar_verb: { past: ["جلستُ", "جلستَ", "جلس", "جلسنا", "جلستم", "جلسوا"], present: ["أجلسُ", "تجلسُ", "يجلسُ", "نجلسُ", "تجلسون", "يجلسون"] } },
-            "نگاه کردن": { stem: "نگاه کن", category: "perception", prep_phrase: { fa: "به آسمان", ar: "إلى السماء" }, ar_verb: { past: ["نظرتُ", "نظرتَ", "نظر", "نظرنا", "نظرتم", "نظروا"], present: ["أنظرُ", "تنظرُ", "ينظرُ", "ننظرُ", "تنظرون", "ينظرون"] } },
-            "نوشتن": { stem: "نویس", category: "creation", object: { fa: "یک نامه", ar: "رسالة" }, ar_verb: { past: ["كتبتُ","كتبتَ","كتب","كتبنا","كتبتم","كتبوا"], present: ["أكتبُ","تكتبُ","يكتبُ","نكتبُ","تكتبون","يكتبون"] } },
-            "یاد گرفتن": { stem: "یاد گیر", category: "cognition", object: { fa: "یک زبان جدید", ar: "لغة جديدة" }, ar_verb: { past: ["تعلمتُ", "تعلمتَ", "تعلم", "تعلمنا", "تعلمتم", "تعلموا"], present: ["أتعلمُ", "تتعلمُ", "يتعلمُ", "نتعلمُ", "تتعلمون", "يتعلمون"] } },
-            "یاد دادن": { stem: "یاد ده", category: "communication", object: { fa: "یک درس مهم", ar: "درساً مهماً" }, ar_verb: { past: ["علمتُ", "علمتَ", "علم", "علمنا", "علمتم", "علموا"], present: ["أُعلمُ", "تُعلمُ", "يُعلمُ", "نُعلمُ", "تُعلمون", "يُعلمون"] } }
+        const adverbs = {
+            past: { fa: "دیروز", ar: "أمس" },
+            present: { fa: "معمولاً", ar: "عادةً" },
+            presentContinuous: { fa: "الان", ar: "الآن" }
+        };
+        const verbData = { "آفریدن": { stem: "آفرین", category: "creation", object: { fa: "یک اثر هنری را", ar: "عملاً فنياً" }, ar_verb: { past: ["خلقتُ","خلقتَ","خلق","خلقنا","خلقتم","خلقوا"], present: ["أخلقُ","تخلقُ","يخلقُ","نخلقُ","تخلقون","يخلقون"] } }, "آمدن": { stem: "آ", category: "motion", prep_phrase: { fa: "به مهمانی", ar: "إلى الحفلة" }, ar_verb: { past: ["أتيتُ","أتيتَ","أتى","أتينا","أتيتم","أتوا"], present: ["آتي","تأتي","يأتي","نأتي","تأتون","يأتون"] } }, "آوردن": { stem: "آور", category: "motion_transitive", object: { fa: "خبرهای خوب را", ar: "أخباراً جيدة" }, ar_verb: { past: ["أحضرتُ","أحضرتَ","أحضر","أحضرنا","أحضرتم","أحضروا"], present: ["أُحضرُ","تُحضرُ","يُحضرُ","نُحضرُ","تُحضرون","يُحضرون"] } }, "انداختن": { stem: "انداز", category: "motion_transitive", object: { fa: "نگاهی سریع", ar: "نظرة سريعة" }, ar_verb: { past: ["ألقيتُ","ألقيتَ","ألقى","ألقينا","ألقيتم","ألقوا"], present: ["أُلقي","تُلقي","يُلقي","نُلقي","تُلقون","يُلقون"] } }, "ایستادن": { stem: "ایست", category: "state_intransitive", prep_phrase: { fa: "جلوی آینه", ar: "أمام المرآة" }, ar_verb: { past: ["وقفتُ","وقفتَ","وقف","وقفنا","وقفتم","وقفوا"], present: ["أقفُ","تقفُ","يقفُ","نقفُ","تقفون","يقفون"] } }, "باز کردن": { stem: "باز کن", category: "action_transitive", object: { fa: "کتاب را", ar: "الكتاب" }, ar_verb: { past: ["فتحتُ","فتحتَ","فتح","فتحنا","فتحتم","فتحوا"], present: ["أفتحُ","تفتحُ","يفتحُ","نفتحُ","تفتحون","يفتحون"] } }, "بازی کردن": { stem: "بازی کن", category: "action_transitive", prep_phrase: { fa: "در پارک", ar: "في الحديقة" }, ar_verb: { past: ["لعبتُ","لعبتَ","لعب","لعبنا","لعبتم","لعبوا"], present: ["ألعبُ","تلعبُ","يلعبُ","نلعبُ","تلعبون","يلعبون"] } }, "باور کردن": { stem: "باور کن", category: "cognition", object: { fa: "داستان او را", ar: "قصته" }, ar_verb: { past: ["صدقتُ","صدقتَ","صدق","صدقنا","صدقتم","صدقوا"], present: ["أصدقُ","تصدقُ","يصدقُ","نصدقُ","تصدقون","يصدقون"] } }, "بخشیدن": { stem: "بخش", category: "social", object: { fa: "اشتباه دوستم را", ar: "خطأ صديقي" }, ar_verb: { past: ["سامحتُ","سامحتَ","سامح","سامحنا","سامحتم","سامحوا"], present: ["أسامحُ","تسامحُ","يسامحُ","نسامحُ","تسامحون","يسامحون"] } }, "بردن": { stem: "بر", category: "motion_transitive", object: { fa: "جایزه اول را", ar: "بالجائزة الأولى" }, ar_verb: { past: ["فزتُ","فزتَ","فاز","فزنا","فزتم","فازوا"], present: ["أفوزُ","تفوزُ","يفوزُ","نفوزُ","تفوزون","يفوزون"] } }, "بستن": { stem: "بند", category: "action_transitive", object: { fa: "در را", ar: "الباب" }, ar_verb: { past: ["أغلقتُ","أغلقتَ","أغلق","أغلقنا","أغلقتم","أغلقوا"], present: ["أُغلقُ","تُغلقُ","يُغلقُ","نُغلقُ","تُغلقون","يُغلقون"] } }, "بودن": { stem: "باش", category: "state_linking", complement: { fa: "خوشحال", ar: "سعيداً" }, ar_verb: { past: ["كنتُ","كنتَ","كان","كنا","كنتم","كانوا"], present: ["أكونُ","تكونُ","يكونُ","نكونُ","تكونون","يكونون"] } }, "پوشیدن": { stem: "پوش", category: "action_transitive", object: { fa: "لباس رسمی را", ar: "الملابس الرسمية" }, ar_verb: { past: ["ارتديتُ","ارتديتَ","ارتدى","ارتدينا","ارتديتم","ارتدوا"], present: ["أرتدي","ترتدي","يرتدي","نرتدي","ترتدون","يرتدون"] } }, "ترسیدن": { stem: "ترس", category: "emotion", prep_phrase: { fa: "از ارتفاع", ar: "من المرتفعات" }, ar_verb: { past: ["خفتُ","خفتَ","خاف","خفنا","خفتم","خافوا"], present: ["أخافُ","تخافُ","يخافُ","نخافُ","تخافون","يخافون"] } }, "توانستن": { stem: "توان", category: "modal", infinitive_phrase: { fa: "مشکل را حل کند", ar: "أن يحل المشكلة" }, ar_verb: { past: ["استطعتُ","استطعتَ","استطاع","استطعنا","استطعتم","استطاعوا"], present: ["أستطيعُ","تستطيعُ","يستطيعُ","نستطيعُ","تستطيعون","يستطيعون"] } }, "خواندن": { stem: "خوان", category: "communication", object: { fa: "یک رمان", ar: "رواية" }, ar_verb: { past: ["قرأتُ","قرأتَ","قرأ","قرأنا","قرأتم","قرأوا"], present: ["أقرأُ","تقرأُ","يقرأُ","نقرأُ","تقرأون","يقرأون"] } }, "خوردن": { stem: "خور", category: "ingestion", object: { fa: "یک سیب", ar: "تفاحة" }, ar_verb: { past: ["أكلتُ","أكلتَ","أكل","أكلنا","أكلتم","أكلوا"], present: ["آكلُ","تأكلُ","يأكلُ","نأكلُ","تأكلون","يأكلون"] } }, "دادن": { stem: "ده", category: "transaction", object: { fa: "یک کتاب به او", ar: "كتاباً له" }, ar_verb: { past: ["أعطيتُ", "أعطيتَ", "أعطى", "أعطينا", "أعطيتم", "أعطوا"], present: ["أعطي", "تعطي", "يعطي", "نعطي", "تعطون", "يعطون"] } }, "داشتن": { stem: "دار", category: "possession", object: { fa: "یک ایده خوب", ar: "فكرة جيدة" }, ar_verb: { past: ["كان لديّ", "كان لديكَ", "كان لديه", "كان لدينا", "كان لديكم", "كان لديهم"], present: ["لديّ", "لديكَ", "لديه", "لدينا", "لديكم", "لديهم"] } }, "دانستن": { stem: "دان", category: "cognition", object: { fa: "حقیقت را", ar: "الحقيقة" }, ar_verb: { past: ["عرفتُ","عرفتَ","عرف","عرفنا","عرفتم","عرفوا"], present: ["أعرفُ","تعرفُ","يعرفُ","نعرفُ","تعرفون","يعرفون"] } }, "دیدن": { stem: "بین", category: "perception", object: { fa: "یک فیلم", ar: "فيلماً" }, ar_verb: { past: ["شاهدتُ","شاهدتَ","شاهد","شاهدنا","شاهدتم","شاهدوا"], present: ["أُشاهد","تُشاهد","يُشاهد","نُشاهد","تُشاهدون","يُشاهدون"] } }, "رفتن": { stem: "رو", category: "motion_intransitive", prep_phrase: { fa: "به دانشگاه", ar: "إلى الجامعة" }, ar_verb: { past: ["ذهبتُ","ذهبتَ","ذهب","ذهبنا","ذهبتم","ذهبوا"], present: ["أذهبُ","تذهبُ","يذهبُ","نذهبُ","تذهبون","يذهبون"] } }, "ساختن": { stem: "ساز", category: "creation", object: { fa: "یک خانه زیبا", ar: "بيتاً جميلاً" }, ar_verb: { past: ["بنيتُ","بنيتَ","بنى","بنينا","بنيتم","بنوا"], present: ["أبني","تبني","يبني","نبني","تبنون","يبنون"] } }, "شنیدن": { stem: "شنو", category: "perception", object: { fa: "صدای موسیقی را", ar: "صوت الموسيقى" }, ar_verb: { past: ["سمعتُ","سمعتَ","سمع","سمعنا","سمعتم","سمعوا"], present: ["أسمعُ","تسمعُ","يسمعُ","نسمعُ","تسمعون","يسمعون"] } }, "شدن": { stem: "شو", category: "change_of_state", complement: { fa: "یک معلم", ar: "معلماً" }, ar_verb: { past: ["أصبحتُ","أصبحتَ","أصبح","أصبحنا","أصبحتم","أصبحوا"], present: ["أُصبحُ","تُصبحُ","يُصبحُ","نُصبحُ","تُصبحون","يُصبحون"] } }, "فروختن": { stem: "فروش", category: "transaction", object: { fa: "ماشین قدیمی را", ar: "السيارة القديمة" }, ar_verb: { past: ["بعتُ","بعتَ","باع","بعنا","بعتم","باعوا"], present: ["أبيعُ","تبيعُ","يبيعُ","نبيعُ","تبيعون","يبيعون"] } }, "فهمیدن": { stem: "فهم", category: "cognition", object: { fa: "درس را به خوبی", ar: "الدرس جيداً" }, ar_verb: { past: ["فهمتُ","فهمتَ","فهم","فهمنا","فهمتم","فهموا"], present: ["أفهمُ","تفهمُ","يفهمُ","نفهمُ","تفهمون","يفهمون"] } }, "گرفتن": { stem: "گیر", category: "possession", object: { fa: "یک عکس", ar: "صورة" }, ar_verb: { past: ["التقطتُ", "التقطتَ", "التقط", "التقطنا", "التقطتم", "التقطوا"], present: ["ألتقطُ", "تلتقطُ", "يلتقطُ", "نلتقطُ", "تلتقطون", "يلتقطون"] } }, "گفتن": { stem: "گو", category: "communication", object: { fa: "یک داستان را", ar: "قصة" }, ar_verb: { past: ["حكيتُ","حكيتَ","حكى","حكينا","حكيتم","حكوا"], present: ["أحكي","تحكي","يحكي","نحكي","تحكون","يحكون"] } }, "نوشتن": { stem: "نویس", category: "creation", object: { fa: "یک نامه", ar: "رسالة" }, ar_verb: { past: ["كتبتُ","كتبتَ","كتب","كتبنا","كتبتم","كتبوا"], present: ["أكتبُ","تكتبُ","يكتبُ","نكتبُ","تكتبون","يكتبون"] } }, "باختن": { stem: "باز", category: "action_transitive", object: { fa: "بازی را", ar: "المباراة" } }, "باران آمدن": { stem: "باران آ", category: "weather", prep_phrase: { fa: "از آسمان", ar: "من السماء" } }, "بافتن": { stem: "باف", category: "creation", object: { fa: "یک ژاکت را", ar: "سترة" } }, "بر داشتن": { stem: "بر دار", category: "motion_transitive", object: { fa: "قلم را", ar: "القلم" } }, "بر گشتن": { stem: "بر گرد", category: "motion_intransitive", prep_phrase: { fa: "به خانه", ar: "إلى البيت" } }, "برف آمدن": { stem: "برف آ", category: "weather", prep_phrase: { fa: "در زمستان", ar: "في الشتاء" } }, "بریدن": { stem: "بر", category: "action_transitive", object: { fa: "نان را", ar: "الخبز" } }, "به دنیا آمدن": { stem: "به دنیا آ", category: "state_intransitive", prep_phrase: { fa: "در یک روز زیبا", ar: "في يوم جميل" } }, "به دنیا آوردن": { stem: "به دنیا آور", category: "creation", object: { fa: "یک نوزاد را", ar: "مولوداً" } }, "بو کردن": { stem: "بو کن", category: "perception", object: { fa: "گل را", ar: "الوردة" } }, "بوس کردن": { stem: "بوس کن", category: "social", object: { fa: "دست مادرش را", ar: "يد أمه" } }, "پختن": { stem: "پز", category: "creation", object: { fa: "شام را", ar: "العشاء" } }, "پرواز کردن": { stem: "پرواز کن", category: "motion_intransitive", prep_phrase: { fa: "در آسمان", ar: "في السماء" } }, "پیچیدن": { stem: "پیچ", category: "action_transitive", object: { fa: "هدیه را", ar: "الهدية" } }, "تا کردن": { stem: "تا کن", category: "action_transitive", object: { fa: "لباس ها را", ar: "الملابس" } }, "ترساندن": { stem: "ترسان", category: "emotion", object: { fa: "کودک را", ar: "الطفل" } }, "تلفن زدن": { stem: "تلفن زن", category: "communication", prep_phrase: { fa: "به دوستش", ar: "لصديقه" } }, "تماشا کردن": { stem: "تماشا کن", category: "perception", object: { fa: "تلویزیون را", ar: "التلفاز" } }, "تمیز کردن": { stem: "تمیز کن", category: "action_transitive", object: { fa: "اتاق را", ar: "الغرفة" } }, "جواب دادن": { stem: "جواب ده", category: "communication", prep_phrase: { fa: "به سوال", ar: "على السؤال" } }, "جویدن": { stem: "جو", category: "ingestion", object: { fa: "آدامس را", ar: "العلكة" } }, "جیغ زدن": { stem: "جیغ زن", category: "emotion", prep_phrase: { fa: "از ترس", ar: "من الخوف" } }, "چرت زدن": { stem: "چرت زن", category: "state_intransitive", prep_phrase: { fa: "برای چند دقیقه", ar: "لبضع دقائق" } }, "چرخاندن": { stem: "چرخان", category: "action_transitive", object: { fa: "فرمان را", ar: "عجلة القيادة" } }, "چرخیدن": { stem: "چرخ", category: "motion_intransitive", prep_phrase: { fa: "دور خود", ar: "حول نفسه" } }, "چسباندن": { stem: "چسبان", category: "action_transitive", object: { fa: "عکس را به دیوار", ar: "الصورة على الحائط" } }, "چشیدن": { stem: "چش", category: "ingestion", object: { fa: "طعم غذا را", ar: "طعم الأكل" } }, "چیدن": { stem: "چین", category: "action_transitive", object: { fa: "میوه ها را", ar: "الفواكه" } }, "حرف زدن": { stem: "حرف زن", category: "communication", prep_phrase: { fa: "با معلم", ar: "مع المعلم" } }, "حل کردن": { stem: "حل کن", category: "cognition", object: { fa: "مسئله را", ar: "المسألة" } }, "حمام رفتن": { stem: "حمام رو", category: "action_intransitive", prep_phrase: { fa: "هر روز", ar: "كل يوم" } }, "خراب کردن": { stem: "خراب کن", category: "action_transitive", object: { fa: "اسباب بازی را", ar: "اللعبة" } }, "خرید رفتن": { stem: "خرید رو", category: "motion_intransitive", prep_phrase: { fa: "به بازار", ar: "إلى السوق" } }, "خم کردن": { stem: "خم کن", category: "action_transitive", object: { fa: "یک میله آهنی را", ar: "قضيباً حديدياً" } }, "خواب دیدن": { stem: "خواب بین", category: "cognition", object: { fa: "یک رویای عجیب", ar: "حلماً غريباً" } }, "داد زدن": { stem: "داد زن", category: "communication", prep_phrase: { fa: "با صدای بلند", ar: "بصوت عالٍ" } }, "در زدن": { stem: "در زن", category: "action_intransitive", prep_phrase: { fa: "قبل از ورود", ar: "قبل الدخول" } }, "درست کردن": { stem: "درست کن", category: "creation", object: { fa: "یک کیک را", ar: "كعكة" } }, "دروغ گفتن": { stem: "دروغ گو", category: "communication", prep_phrase: { fa: "به دیگران", ar: "للآخرين" } }, "دست زدن": { stem: "دست زن", category: "social", prep_phrase: { fa: "برای تشویق", ar: "للتشجيع" } }, "دنبال گشتن": { stem: "دنبال بگرد", category: "cognition", prep_phrase: { fa: "دنبال کلیدهایم", ar: "عن مفاتيحي" } }, "دوختن": { stem: "دوز", category: "creation", object: { fa: "یک لباس را", ar: "ثوباً" } }, "دوست داشتن": { stem: "دوست دار", category: "emotion", object: { fa: "خانواده اش را", ar: "عائلته" } }, "دوش گرفتن": { stem: "دوش گیر", category: "action_intransitive", prep_phrase: { fa: "صبح ها", ar: "في الصباح" } }, "رسیدن": { stem: "رس", category: "motion_intransitive", prep_phrase: { fa: "به خانه", ar: "إلى البيت" } }, "رقصیدن": { stem: "رقص", category: "action_intransitive", prep_phrase: { fa: "در عروسی", ar: "في العرس" } }, "ریختن": { stem: "ریز", category: "motion_transitive", object: { fa: "آب را در لیوان", ar: "الماء في الكأس" } }, "زاییدن": { stem: "زای", category: "creation", object: { fa: "یک بچه گربه را", ar: "قطة صغيرة" } }, "زندگی کردن": { stem: "زندگی کن", category: "state_intransitive", prep_phrase: { fa: "در یک شهر بزرگ", ar: "في مدينة كبيرة" } }, "سوختن": { stem: "سوز", category: "change_of_state", prep_phrase: { fa: "در آتش", ar: "في النار" } }, "شمردن": { stem: "شمر", category: "cognition", object: { fa: "ستاره ها را", ar: "النجوم" } }, "عاشق شدن": { stem: "عاشق شو", category: "emotion", prep_phrase: { fa: "در نگاه اول", ar: "من النظرة الأولى" } }, "فراموش کردن": { stem: "فراموش کن", category: "cognition", object: { fa: "گذشته را", ar: "الماضي" } }, "فرستادن": { stem: "فرست", category: "communication", object: { fa: "یک ایمیل را", ar: "بريداً إلكترونياً" } }, "فشار دادن": { stem: "فشار ده", category: "action_transitive", object: { fa: "دکمه را", ar: "الزر" } }, "قبول کردن": { stem: "قبول کن", category: "social", object: { fa: "پیشنهاد را", ar: "العرض" } }, "کاشتن": { stem: "کار", category: "creation", object: { fa: "یک درخت را", ar: "شجرة" } }, "کشیدن": { stem: "کش", category: "creation", object: { fa: "یک نقاشی را", ar: "رسمة" } }, "کوبیدن": { stem: "کوب", category: "action_transitive", object: { fa: "میخ را", ar: "المسمار" } }, "کندن": { stem: "کن", category: "action_transitive", object: { fa: "یک چاله را", ar: "حفرة" } }, "گریه کردن": { stem: "گریه کن", category: "emotion", prep_phrase: { fa: "از ناراحتی", ar: "من الحزن" } }, "گوش کردن": { stem: "گوش کن", category: "perception", prep_phrase: { fa: "به معلم", ar: "للمعلم" } }, "لرزیدن": { stem: "لرز", category: "emotion", prep_phrase: { fa: "از سرما", ar: "من البرد" } }, "ماندن": { stem: "مان", category: "state_intransitive", prep_phrase: { fa: "در خانه", ar: "في البيت" } }, "نشان دادن": { stem: "نشان ده", category: "communication", object: { fa: "راه را", ar: "الطريق" } }, "نشستن": { stem: "نشین", category: "state_intransitive", prep_phrase: { fa: "کنار پنجره", ar: "بجانب النافذة" } }, "نگاه کردن": { stem: "نگاه کن", category: "perception", prep_phrase: { fa: "به آسمان", ar: "إلى السماء" } }, "نوشیدن": { stem: "نوش", category: "ingestion", object: { fa: "یک لیوان آب", ar: "كأس ماء" } }, "هل دادن": { stem: "هل ده", category: "action_transitive", object: { fa: "ماشین را", ar: "السيارة" } }, "وضو گرفتن": { stem: "وضو بگیر", category: "action_intransitive", prep_phrase: { fa: "برای نماز", ar: "للصلاة" } }, "نماز خواندن": { stem: "نماز خوان", category: "action_intransitive", prep_phrase: { fa: "در مسجد", ar: "في المسجد" } }, "لباس پوشیدن": { stem: "لباس پوش", category: "action_transitive", object: { fa: "جدیدی را", ar: "جديدة" } }, "استراحت کردن": { stem: "استراحت کن", category: "action_intransitive", prep_phrase: { fa: "بعد از کار", ar: "بعد العمل" } }, "شستن": { stem: "شوی", category: "action_transitive", object: { fa: "دست‌هایم را", ar: "يدي" } }, "یاد گرفتن": { stem: "یاد بگیر", category: "cognition", object: { fa: "یک مهارت جدید", ar: "مهارة جديدة" } }, "مطالعه کردن": { stem: "مطالعه کن", category: "cognition", object: { fa: "یک کتاب را", ar: "كتاباً" } }, "پرسیدن": { stem: "پرس", category: "communication", object: { fa: "یک سوال را", ar: "سؤالاً" } }, "زنگ (تلفن) زدن": { stem: "زنگ بزن", category: "communication", prep_phrase: { fa: "به دوستم", ar: "لصديقي" } }, "داخل شدن": { stem: "داخل شو", category: "motion_intransitive", prep_phrase: { fa: "به اتاق", ar: "إلى الغرفة" } }, "خارج شدن": { stem: "خارج شو", category: "motion_intransitive", prep_phrase: { fa: "از خانه", ar: "من البيت" } }, "کپی کردن": { stem: "کپی کن", category: "action_transitive", object: { fa: "سند را", ar: "المستند" } }, "سیگار کشیدن": { stem: "سیگار بکش", category: "action_intransitive", prep_phrase: { fa: "", ar: "" } }, "دنبال گشتن": { stem: "دنبال بگرد", category: "cognition", prep_phrase: { fa: "دنبال کلیدهایم", ar: "عن مفاتيحي" } }, "مرور کردن": { stem: "مرور کن", category: "cognition", object: { fa: "درس‌ها را", ar: "الدروس" } }, "پیدا کردن": { stem: "پیدا کن", category: "cognition", object: { fa: "کتابم را", ar: "كتابي" } }
         };
 
         // --- LOGIC ---
         let lastConjugationData = {};
+        let isNegativeMode = false;
         
         const elements = {};
-        const elementIds = ['verb-select', 'verb-input', 'conjugate-btn', 'btn-text', 'conjugation-table', 'table-body', 'verb-info', 'examples-section', 'present-examples-btn', 'past-examples-btn', 'sentences-container', 'correction-notice', 'error-notice', 'results-container'];
+        const elementIds = [ 'verb-select', 'verb-input', 'conjugate-btn', 'btn-text', 'conjugation-table', 'table-body', 'mobile-conjugation-view', 'verb-info', 'examples-section', 'present-examples-btn', 'present-continuous-examples-btn', 'past-examples-btn', 'sentences-container', 'correction-notice', 'error-notice', 'results-container', 'participles-section', 'participles-list', 'negation-toggle', 'positive-btn', 'negative-btn' ];
         elementIds.forEach(id => { elements[id.replace(/-(\w)/g, (_, p1) => p1.toUpperCase())] = document.getElementById(id); });
         
         function toggleLoading(isLoading) {
             elements.conjugateBtn.querySelector('.loader').style.display = isLoading ? 'inline-block' : 'none';
-            elements.btnText.textContent = isLoading ? 'جارِ التصريف...' : 'صَرّف الفعل';
+            elements.btnText.textContent = isLoading ? '...' : 'صَرّف';
             elements.conjugateBtn.disabled = isLoading;
         }
 
@@ -375,61 +285,111 @@
 
         function levenshtein(a,b){if(a.length==0)return b.length;if(b.length==0)return a.length;const m=Array(b.length+1).fill(null).map(()=>Array(a.length+1).fill(null));for(let i=0;i<=a.length;i++){m[0][i]=i}for(let j=0;j<=b.length;j++){m[j][0]=j}for(let j=1;j<=b.length;j++){for(let i=1;i<=a.length;i++){const c=a[i-1]===b[j-1]?0:1;m[j][i]=Math.min(m[j][i-1]+1,m[j-1][i]+1,m[j-1][i-1]+c)}}return m[b.length][a.length]}
         function autoCorrect(verb){const allKnownVerbs=[...Object.keys(verbData)];if(allKnownVerbs.includes(verb))return{correctedVerb:verb,wasCorrected:false};let bestMatch=null,minDistance=2;for(const knownVerb of allKnownVerbs){const distance=levenshtein(verb,knownVerb);if(distance<minDistance){minDistance=distance;bestMatch=knownVerb}}return{correctedVerb:bestMatch||verb,wasCorrected:!!bestMatch}}
-        
-        function normalizePersianChars(text) {
-            if (!text) return "";
-            return text.replace(/ي/g, 'ی').replace(/ك/g, 'ک');
-        }
-
-        function deriveStems(verbPart) {
-            if (!verbPart || !verbPart.endsWith('ن')) return null; const pastStem = verbPart.slice(0, -1); let presentStem = null; if (verbPart.endsWith('اختن')) { presentStem = pastStem.slice(0, -2) + 'از'; } else if (verbPart.endsWith('اشتن')) { presentStem = pastStem.slice(0, -2) + 'ار'; } else if (verbPart.endsWith('افتن')) { presentStem = pastStem.slice(0, -2) + 'اب'; } else if (verbPart.endsWith('وختن')) { presentStem = pastStem.slice(0, -3) + 'وش'; } else if (verbPart.endsWith('ودن')) { if (verbPart.endsWith('سودن')) { presentStem = pastStem.slice(0, -2) + 'ا'; } else { presentStem = pastStem.slice(0, -2) + 'ای'; } } else if (verbPart.endsWith('ادن')) { presentStem = pastStem.slice(0, -1); } else if (verbPart.endsWith('ستن')) { if (verbPart === 'شستن') { presentStem = 'شو'; } else if (verbPart.endsWith('سستن')) { presentStem = pastStem.slice(0, -2) + 'ل'; } else { presentStem = pastStem.slice(0, -1); } } else if (verbPart.endsWith('اندن')) { presentStem = pastStem.slice(0, -2) + 'ان'; } else if (verbPart.endsWith('ردن')) { if (pastStem.endsWith('کرد')) { presentStem = pastStem.slice(0, -2) + 'ن'; } else { presentStem = pastStem.slice(0, -2) + 'ر'; } } else if (verbPart.endsWith('فتن')) { if (verbPart === 'رفتن') { presentStem = 'رو'; } else if (verbPart === 'گرفتن') { presentStem = 'گیر'; } else { presentStem = pastStem.slice(0, -2) + 'ب'; } } else if (verbPart.endsWith('شتن')) { presentStem = pastStem.slice(0, -2) + 'ر'; } else if (verbPart.endsWith('یدن')) { presentStem = pastStem.slice(0, -2); } if (presentStem) { return { pastStem, presentStem }; } return null;
-        }
+        function normalizePersianChars(text) { if (!text) return ""; return text.replace(/ي/g, 'ی').replace(/ك/g, 'ک'); }
+        function deriveStems(verbPart) { if (!verbPart || !verbPart.endsWith('ن')) return null; const pastStem = verbPart.slice(0, -1); let presentStem = null; if (verbPart.endsWith('اختن')) { presentStem = pastStem.slice(0, -2) + 'از'; } else if (verbPart.endsWith('اشتن')) { presentStem = pastStem.slice(0, -2) + 'ار'; } else if (verbPart.endsWith('افتن')) { presentStem = pastStem.slice(0, -2) + 'اب'; } else if (verbPart.endsWith('وختن')) { presentStem = pastStem.slice(0, -3) + 'وش'; } else if (verbPart.endsWith('ودن')) { if (verbPart.endsWith('سودن')) { presentStem = pastStem.slice(0, -2) + 'ا'; } else { presentStem = pastStem.slice(0, -2) + 'ای'; } } else if (verbPart.endsWith('ادن')) { presentStem = pastStem.slice(0, -1); } else if (verbPart.endsWith('ستن')) { if (verbPart === 'شستن') { presentStem = 'شو'; } else if (verbPart.endsWith('سستن')) { presentStem = pastStem.slice(0, -2) + 'ل'; } else { presentStem = pastStem.slice(0, -1); } } else if (verbPart.endsWith('اندن')) { presentStem = pastStem.slice(0, -2) + 'ان'; } else if (verbPart.endsWith('ردن')) { if (pastStem.endsWith('کرد')) { presentStem = pastStem.slice(0, -2) + 'ن'; } else { presentStem = pastStem.slice(0, -2) + 'ر'; } } else if (verbPart.endsWith('فتن')) { if (verbPart === 'رفتن') { presentStem = 'رو'; } else if (verbPart === 'گرفتن') { presentStem = 'گیر'; } else { presentStem = pastStem.slice(0, -2) + 'ب'; } } else if (verbPart.endsWith('شتن')) { presentStem = pastStem.slice(0, -2) + 'ر'; } else if (verbPart.endsWith('یدن')) { presentStem = pastStem.slice(0, -2); } if (presentStem) { return { pastStem, presentStem }; } return null; }
 
         function conjugate(infinitive) { 
-            const finalInfinitive = infinitive.trim(); 
-            if (!finalInfinitive) return false; 
+            const finalInfinitive = infinitive.trim(); if (!finalInfinitive) return false; 
             lastConjugationData = { infinitive: finalInfinitive };
             const isCompound = finalInfinitive.includes(' ');
             let nounPart = '', verbPart = finalInfinitive, pastStem, presentStem; 
             if (isCompound) { const parts = finalInfinitive.split(' '); nounPart = parts.slice(0, -1).join(' ') + ' '; verbPart = parts[parts.length - 1]; }
             let stemsFound = false; 
-            if (verbData[finalInfinitive]) { 
-                pastStem = verbPart.slice(0, -1); 
-                presentStem = verbData[finalInfinitive].stem.replace(nounPart, ''); 
-                stemsFound = true; 
-            } else { 
-                const derived = deriveStems(verbPart); 
-                if (derived) { pastStem = derived.pastStem; presentStem = derived.presentStem; stemsFound = true; } 
-            } 
-            if (!stemsFound) { 
-                showError(`الفعل <strong class="persian-text">"${finalInfinitive}"</strong> شاذ جداً أو غير صحيح. لم يتمكن المحرك الذكي من اشتقاقه.`);
-                return false; 
-            } 
+            if (verbData[finalInfinitive]) { pastStem = verbPart.slice(0, -1); presentStem = verbData[finalInfinitive].stem.replace(nounPart, ''); stemsFound = true; 
+            } else { const derived = deriveStems(verbPart); if (derived) { pastStem = derived.pastStem; presentStem = derived.presentStem; stemsFound = true; } } 
+            
+            if (!stemsFound) { showError(`الفعل <strong class="persian-text">"${finalInfinitive}"</strong> شاذ جداً أو غير صحيح. لم يتمكن المحرك الذكي من اشتقاقه.`); return false; } 
+            
+            lastConjugationData.pastStem = pastStem;
+            lastConjugationData.presentStem = presentStem;
+            lastConjugationData.nounPart = nounPart;
+
             const fullPastStem = nounPart + pastStem, fullPresentStem = nounPart + presentStem; 
-            elements.verbInfo.innerHTML = `<span class="persian-text">المصدر: <span class="fw-bold">${finalInfinitive}</span></span> | <span class="persian-text">الماضي: <span class="fw-bold">${fullPastStem}</span></span> | <span class="persian-text">المضارع: <span class="fw-bold">${fullPresentStem}</span></span>`; 
-            elements.verbInfo.style.display = 'block'; 
-            const pastEndings = ['م', 'ی', '', 'یم', 'ید', 'ند'], presentEndings = ['م', 'ی', 'د', 'یم', 'ید', 'ند']; 
+            elements.verbInfo.innerHTML = `
+                <span class="persian-text">المصدر: <span class="fw-bold">${finalInfinitive}</span></span> | 
+                <span class="persian-text">الماضي: <span class="fw-bold">${fullPastStem}</span></span> | 
+                <span class="persian-text">المضارع: <span class="fw-bold">${fullPresentStem}</span></span>
+            `; 
+            elements.verbInfo.style.display = 'flex'; 
+            
+            const pastEndings = ['م', 'ی', '', 'یم', 'ید', 'ند'], presentEndings = ['م', 'ی', 'د', 'یم', 'ید', 'ند'], daramEndings = ['م', 'ی', 'د', 'یم', 'ید', 'ند'];
+            
             lastConjugationData.past = pastEndings.map(e => nounPart + pastStem + e); 
+            lastConjugationData.pastNegative = lastConjugationData.past.map(v => 'ن' + v.replace(nounPart, ''));
+            lastConjugationData.pastNegative = lastConjugationData.past.map(v => nounPart ? nounPart + 'ن' + v.replace(nounPart, '') : 'ن' + v);
+
             lastConjugationData.present = presentEndings.map(e => (nounPart ? nounPart + 'می‌' : 'می‌') + presentStem + e); 
+            lastConjugationData.presentNegative = lastConjugationData.present.map(v => v.replace('می‌', 'نمی‌'));
+
+            lastConjugationData.presentContinuous = daramEndings.map((e, i) => `دار${e} ${lastConjugationData.present[i]}`);
+            lastConjugationData.presentContinuousNegative = daramEndings.map((e, i) => `ندار${e} ${lastConjugationData.present[i]}`);
+
             lastConjugationData.imperative = generateImperative(verbPart, presentStem, nounPart, isCompound); 
-            displayTable(lastConjugationData); 
+            lastConjugationData.imperativeNegative = lastConjugationData.imperative.map(imp => imp ? nounPart + 'ن' + imp.replace(nounPart, '').replace(/^ب/, '') : '');
+
+            displayParticiples(pastStem, presentStem, nounPart);
+            displayResults();
             return true; 
         }
 
-        function generateImperative(verbPart, presentStem, nounPart, isCompound) { let s, p; if (verbPart === 'داشتن') { s = 'داشته باش'; p = 'داشته باشید'; } else if (verbPart === 'بودن') { s = 'باش'; p = 'باشید'; } else if (verbPart === 'آمدن') { s = 'بیا'; p = 'بیایید'; } else { s = (isCompound || presentStem.startsWith('آ')) ? presentStem : `ب${presentStem}`; p = (isCompound || presentStem.startsWith('آ')) ? presentStem + 'ید' : `ب${presentStem}ید`; } return ['', nounPart + s, '', '', nounPart + p, '']; }
-        function displayTable(data) { elements.tableBody.innerHTML = ''; pronouns.forEach((p, i) => { const row = document.createElement('tr'); row.innerHTML = `<td class="pronoun-col">${p.fa}<br><small>(${p.ar})</small></td><td>${data.past[i]}</td><td>${data.present[i]}</td><td>${data.imperative[i] || '—'}</td>`; elements.tableBody.appendChild(row); }); showResults(true); }
+        function generateImperative(verbPart, presentStem, nounPart, isCompound) { let s, p; if (verbPart === 'داشتن') { s = 'داشته باش'; p = 'باشید'; } else if (verbPart === 'بودن') { s = 'باش'; p = 'باشید'; } else if (verbPart === 'آمدن') { s = 'بیا'; p = 'بیایید'; } else { s = (isCompound || presentStem.startsWith('آ')) ? presentStem : `ب${presentStem}`; p = (isCompound || presentStem.startsWith('آ')) ? presentStem + 'ید' : `ب${presentStem}ید`; } return ['', nounPart + s, '', '', nounPart + p, '']; }
         
+        function displayParticiples(pastStem, presentStem, nounPart) {
+            const pastParticiple = nounPart + pastStem + 'ه';
+            const presentParticiple = nounPart + presentStem + 'نده';
+            elements.participlesList.innerHTML = `
+                <div class="participle-item"><div class="label">اسم المفعول</div><div class="value persian-text">${pastParticiple}</div></div>
+                <div class="participle-item"><div class="label">اسم الفاعل</div><div class="value persian-text">${presentParticiple}</div></div>
+            `;
+        }
+
+        function displayResults() {
+            const data = lastConjugationData;
+            const pos = { p: 'past', pr: 'present', pc: 'presentContinuous', imp: 'imperative' };
+            const neg = { p: 'pastNegative', pr: 'presentNegative', pc: 'presentContinuousNegative', imp: 'imperativeNegative' };
+            const forms = isNegativeMode ? neg : pos;
+
+            elements.tableBody.innerHTML = '';
+            pronouns.forEach((p, i) => { 
+                const row = document.createElement('tr'); 
+                row.innerHTML = `<td class="pronoun-col">${p.fa}<br><small>(${p.ar})</small></td><td>${data[forms.p][i]}</td><td>${data[forms.pr][i]}</td><td>${data[forms.pc][i]}</td><td>${data[forms.imp][i] || '—'}</td>`; 
+                elements.tableBody.appendChild(row); 
+            });
+
+            elements.mobileConjugationView.innerHTML = '';
+             pronouns.forEach((p, i) => {
+                const card = document.createElement('div');
+                card.className = 'conjugation-card';
+                card.style.animationDelay = `${i * 50}ms`;
+                card.innerHTML = `
+                    <div class="card-header">${p.fa} <small>(${p.ar})</small></div>
+                    <div class="card-body">
+                        <div class="tense-row"><span class="tense-label">ماضی ساده</span><span class="tense-value persian-text">${data[forms.p][i]}</span></div>
+                        <div class="tense-row"><span class="tense-label">حال اخباری</span><span class="tense-value persian-text">${data[forms.pr][i]}</span></div>
+                        <div class="tense-row"><span class="tense-label">حال استمراری</span><span class="tense-value persian-text">${data[forms.pc][i]}</span></div>
+                        <div class="tense-row"><span class="tense-label">امر</span><span class="tense-value persian-text">${data[forms.imp][i] || '<span class="imperative-placeholder">—</span>'}</span></div>
+                    </div>
+                `;
+                elements.mobileConjugationView.appendChild(card);
+            });
+
+            showResults(true); 
+            elements.sentencesContainer.style.display = 'none';
+        }
+
         function generateSmartSentences(tense) {
             const infinitive = lastConjugationData.infinitive;
-            const verbs = lastConjugationData[tense];
+            const dataKey = isNegativeMode ? tense + 'Negative' : tense;
+            const verbs = lastConjugationData[dataKey];
             const verbInfo = verbData[infinitive];
 
+            const adverb = adverbs[tense.replace('Negative', '')] || { fa: '', ar: ''};
             let sentenceParts = { fa: "آن را", ar: "ذلك" };
             let arVerbConjugations = null;
             let sentenceStructure = "S_O_V";
             
             if (verbInfo) {
-                arVerbConjugations = verbInfo.ar_verb ? verbInfo.ar_verb[tense] : null;
+                arVerbConjugations = verbInfo.ar_verb ? verbInfo.ar_verb[tense.replace('Negative', '')] : null;
                 if (verbInfo.object) { sentenceParts = verbInfo.object; sentenceStructure = "S_O_V"; } 
                 else if (verbInfo.prep_phrase) { sentenceParts = verbInfo.prep_phrase; sentenceStructure = "S_PP_V"; } 
                 else if (verbInfo.complement) { sentenceParts = verbInfo.complement; sentenceStructure = "S_C_V"; } 
@@ -440,24 +400,30 @@
 
             let sentencesHTML = '<ul>';
             pronouns.forEach((p, i) => {
-                let persianSentence = "";
-                let arabicSentence = "";
-
+                let persianSentence = "", arabicSentence = "", verbToDisplay = verbs[i];
+                let faAdverb = isNegativeMode ? '' : adverb.fa;
+                let arAdverb = isNegativeMode ? '' : adverb.ar;
+                
                 switch(sentenceStructure) {
-                    case "S_O_V": persianSentence = `${p.fa} ${sentenceParts.fa} ${verbs[i]}`; break;
-                    case "S_PP_V": persianSentence = `${p.fa} ${sentenceParts.fa} ${verbs[i]}`; break;
-                    case "S_C_V": persianSentence = `${p.fa} ${sentenceParts.fa} ${verbs[i].replace(/می‌|می/g, "")}`; break;
-                    case "S_V": persianSentence = `${p.fa} ${verbs[i]}`; break;
-                    default: persianSentence = `${p.fa} ${sentenceParts.fa} ${verbs[i]}`;
+                    case "S_O_V": persianSentence = `${p.fa} ${faAdverb} ${sentenceParts.fa} ${verbToDisplay}`; break;
+                    case "S_PP_V": persianSentence = `${p.fa} ${faAdverb} ${sentenceParts.fa} ${verbToDisplay}`; break;
+                    case "S_C_V": persianSentence = `${p.fa} ${faAdverb} ${sentenceParts.fa} ${verbToDisplay.replace(/می‌|می/g, "")}`; break;
+                    case "S_V": persianSentence = `${p.fa} ${faAdverb} ${verbToDisplay}`; break;
+                    default: persianSentence = `${p.fa} ${faAdverb} ${sentenceParts.fa} ${verbToDisplay}`;
                 }
 
                 if (arVerbConjugations && arVerbConjugations[i]) {
-                    arabicSentence = `${p.ar} ${arVerbConjugations[i]} ${sentenceParts.ar}`;
+                     let arVerb = arVerbConjugations[i];
+                     if(isNegativeMode) {
+                         if(tense === 'past') arVerb = `لم ${arVerb.replace(/تُ|تَ|ا/,'')}`; // Simplification
+                         else arVerb = `لا ${arVerb}`;
+                     }
+                    arabicSentence = `${p.ar} ${arAdverb} ${arVerb} ${sentenceParts.ar}`;
                 } else {
                     arabicSentence = "لا تتوفر ترجمة آلية لهذا الفعل.";
                 }
 
-                sentencesHTML += `<li><span class="persian-text">${persianSentence.trim()}.</span> <span class="arabic-translation">(${arabicSentence.trim()})</span></li>`;
+                sentencesHTML += `<li><span class="persian-text">${persianSentence.replace(/  +/g, ' ').trim()}.</span> <span class="arabic-translation">(${arabicSentence.replace(/  +/g, ' ').trim()})</span></li>`;
             });
             sentencesHTML += '</ul>';
             elements.sentencesContainer.innerHTML = sentencesHTML;
@@ -470,8 +436,6 @@
             if (!verb) return;
             
             toggleLoading(true);
-            
-            // ** تم إزالة منطق VIP للسماح للمحرك الجديد بالعمل دائماً **
             
             setTimeout(() => {
                 const { correctedVerb, wasCorrected } = autoCorrect(verb);
@@ -492,13 +456,10 @@
             }, 50);
         }
 
-        // --- INIT & EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => {
             const allVerbs = Object.keys(verbData).sort((a, b) => a.localeCompare(b, 'fa'));
             let optionsHtml = '<option value="">-- اختر فعلاً من القائمة --</option>';
-            allVerbs.forEach(verb => { 
-                optionsHtml += `<option value="${verb}">${verb}</option>`;
-            });
+            allVerbs.forEach(verb => { optionsHtml += `<option value="${verb}">${verb}</option>`; });
             elements.verbSelect.innerHTML = optionsHtml;
             
             elements.verbSelect.addEventListener('change', () => handleRequest(elements.verbSelect));
@@ -518,6 +479,21 @@
             
             elements.pastExamplesBtn.addEventListener('click', () => generateSmartSentences('past'));
             elements.presentExamplesBtn.addEventListener('click', () => generateSmartSentences('present'));
+            elements.presentContinuousExamplesBtn.addEventListener('click', () => generateSmartSentences('presentContinuous'));
+
+            elements.positiveBtn.addEventListener('click', () => {
+                isNegativeMode = false;
+                elements.positiveBtn.classList.add('active');
+                elements.negativeBtn.classList.remove('active');
+                if (lastConjugationData.infinitive) displayResults();
+            });
+
+            elements.negativeBtn.addEventListener('click', () => {
+                isNegativeMode = true;
+                elements.negativeBtn.classList.add('active');
+                elements.positiveBtn.classList.remove('active');
+                if (lastConjugationData.infinitive) displayResults();
+            });
         });
     </script>
 </body>
